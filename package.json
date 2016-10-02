@@ -1,0 +1,33 @@
+{
+  "name": "fluffster",
+  "version": "1.0.0",
+  "description": "Lightweight state container.",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graforlock/fluffster.git"
+  },
+  "keywords": [
+    "fluffster",
+    "react",
+    "state",
+    "reactive"
+  ],
+  "author": "Maciej Sitko",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/graforlock/fluffster/issues"
+  },
+  "homepage": "https://github.com/graforlock/fluffster#readme",
+  "dependencies": {
+    "kefir": "^3.5.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-uglify": "^2.0.0"
+  }
+}
