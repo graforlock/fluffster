@@ -5,9 +5,9 @@ function State(state)
 {
     if (this instanceof State)
     {
-        this.state = state;
+        this.state = state.appState;
         this._stream$ = kefir.pool();
-        this.initState = state;
+        this.initState = state.appState;
         this.listeners = [];
 
         this.onNext(function (state)
@@ -30,6 +30,8 @@ function State(state)
         }.bind(this);
 
         this.notify();
+        console.log(state);
+        this.provide(state.component);
 
     } else
     {

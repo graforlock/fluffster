@@ -1,4 +1,5 @@
 var Resolve = require('./services/resolve');
+var State = require('./fluffster');
 
 var StateRouter = {
 
@@ -43,3 +44,5 @@ var StateRouter = {
             });
     }
 };
+
+module.exports = StateRouter;
