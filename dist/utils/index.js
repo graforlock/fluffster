@@ -1,1 +1,0 @@
-module.exports={compareTo:function(r,t){return JSON.stringify(r)===JSON.stringify(t)},extend:function(r,t){for(var n in t)t[n]&&t[n].constructor&&t[n].constructor===Object?(r[n]=r[n]||{},extend(r[n],t[n])):r[n]=t[n];return r}};
