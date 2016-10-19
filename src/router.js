@@ -35,9 +35,9 @@ class StateRouter {
 
                 if (!StateRouter.defaultErrorHandler)
                 {
-                    /* Static magentoErrorHandler = true;
+                    /* Static defaultErrorHandler = true;
 
-                     This results in magento executing fallback of
+                     This results in default executing fallback of
                      handling the missing route, so the code below
                      would not be executed. */
 
