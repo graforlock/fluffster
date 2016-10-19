@@ -5,9 +5,9 @@ function State(state)
 {
     if (this instanceof State)
     {
-        this.state = state.appState;
+        this.state = state;
         this._stream$ = kefir.pool();
-        this.initState = state.appState;
+        this.initState = state;
         this.listeners = [];
 
         this.onNext(function (state)
@@ -40,9 +40,9 @@ function State(state)
 State.prototype.notify = function (newState)
 {
     newState = newState || this.state;
-    for (var i = 0; i < this.subscribers.length; i++)
+    for (var i = 0; i < this.listeners.length; i++)
     {
-        this.subscribers[i](newState);
+        this.listeners[i](newState);
     }
 };
 

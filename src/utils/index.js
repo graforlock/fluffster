@@ -20,11 +20,11 @@ module.exports = {
             obj[key] = extension[key];
         }
     },
-    extendMany: function (objects) /* :object */
+    extendMany: function () /* :object */
     {
         /* Extends/reduces objects and returns a new object. */
 
-        return objects.reduce(function (a, b)
+        return [].slice.call(arguments).reduce(function (a, b)
         {
 
             for (var key in b)
