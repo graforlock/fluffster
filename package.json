@@ -24,7 +24,9 @@
   },
   "homepage": "https://github.com/graforlock/fluffster#readme",
   "dependencies": {
-    "kefir": "^3.5.1"
+    "bluebird": "^3.4.6",
+    "kefir": "^3.5.1",
+    "path-to-regexp": "^1.6.0"
   },
   "devDependencies": {
     "gulp": "^3.9.1",

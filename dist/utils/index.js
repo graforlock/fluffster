@@ -1,1 +1,1 @@
-module.exports={compareTo:function(r,t){return JSON.stringify(r)===JSON.stringify(t)},extend:function(r,t){for(var n in t)t[n]&&t[n].constructor&&t[n].constructor===Object?(r[n]=r[n]||{},extend(r[n],t[n])):r[n]=t[n];return r}};
+module.exports={compareTo:function(n,r){return JSON.stringify(n)===JSON.stringify(r)},each:function(n,r){for(var e=0;e<n.length&&!r(n[e],e++););},extend:function(n,r){for(var e in r)n[e]=r[e]},extendMany:function(n){return n.reduce(function(n,r){for(var e in r)n[e]=r[e];return n},{})}};
