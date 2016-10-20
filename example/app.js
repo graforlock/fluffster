@@ -3,8 +3,9 @@ var router = require('../dist').router,
 
 var Component = {
     state: null,
-    update: function(newValue) {
-        if(!compareTo(newValue, Component.state))
+    update: function (newValue)
+    {
+        if (!compareTo(newValue, Component.state))
         {
             Component.state = newValue;
             Component.render();
@@ -17,7 +18,7 @@ var Component = {
             Component.update(value);
         });
     },
-    render: function()
+    render: function ()
     {
         console.log('render! test state is ' + JSON.stringify(Component.state));
 
@@ -26,7 +27,7 @@ var Component = {
     }
 };
 
-setTimeout(function()
+setTimeout(function ()
 {
     router.link(
         {
@@ -34,9 +35,9 @@ setTimeout(function()
             search: ''
         });
 
-},3000);
+}, 3000);
 
-document.querySelector('#test-3').addEventListener('click', function(e)
+document.querySelector('#test-3').addEventListener('click', function (e)
 {
     e.preventDefault();
 
@@ -54,9 +55,20 @@ router.route(
     {
         "/": {
             component: [Component],
-            id: [],
             appState: {
                 test: 1
+            },
+            updates: {
+
+                incrementTest: function (appState)
+                {
+                    return { test : appState.test + 1};
+                },
+
+                decrementTest: function (appState)
+                {
+                    return { test : appState.test - 1};
+                }
             }
         }
     });
@@ -64,8 +76,8 @@ router.route(
 router.route(
     {
         "/test": {
+
             component: [Component],
-            id: [],
             appState: {
                 test: 2
             }
@@ -76,7 +88,6 @@ router.route(
     {
         "/another/:id": {
             component: [Component],
-            id: [],
             appState: {
                 test: 3
             }
@@ -87,7 +98,6 @@ router.route(
     {
         "/error": {
             component: [Component],
-            id: [],
             appState: {
                 test: 404
             }
