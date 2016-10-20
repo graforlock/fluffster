@@ -1,4 +1,4 @@
-## fluffster
+# fluffster
 
 A lightweight state container based on reactive streams.
 
