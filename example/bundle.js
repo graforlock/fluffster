@@ -64,6 +64,9 @@ document.querySelector('#test-3').addEventListener('click', function(e)
         });
 });
 
+
+router.defaultErrorHandler = false;
+
 router.route(
     {
         "/": {
@@ -93,6 +96,17 @@ router.route(
             id: [],
             appState: {
                 test: 3
+            }
+        }
+    });
+
+router.route(
+    {
+        "/error": {
+            component: [Component],
+            id: [],
+            appState: {
+                test: 404
             }
         }
     });
