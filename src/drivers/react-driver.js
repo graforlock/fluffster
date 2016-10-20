@@ -6,6 +6,7 @@ var State = require('./../fluffster'),
 
 function ReactDecorator(Fluffster)
 {
+    /* @Override */
     Fluffster.prototype.provide = function (state)
     {
         this.stream().onValue(function (appState)
