@@ -4,7 +4,7 @@ A lightweight state container based on reactive streams.
 
 Sample use :
 
-```
+```javascript
 router.defaultErrorHandler = false;
 
 router.route(
@@ -62,7 +62,7 @@ router.listen();
 
 If you want to use it with React, please prepend the code with:
 
-```
+```javascript
 router.driver('react');
 ```
 
@@ -70,7 +70,7 @@ It will allow fluffster to work with JSX-style rendering if needed. All appState
 
 Additionally you'd have to provide additional mountpoint for each component:
 
-```
+```javascript
 router.route(
     {
         "/": {
