@@ -54,13 +54,13 @@ router.defaultErrorHandler = false;
 router.route(
     {
         "/": {
-            /* @view */
+            /* @View */
             component: [Component],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 1
             },
-            /* @update */
+            /* @Update */
             updates: {
                 incrementTest: function (appState)
                 {
@@ -77,13 +77,13 @@ router.route(
 router.route(
     {
         "/test": {
-            /* @view */
+            /* @View */
             component: [Component],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 2
             }
-            /* @update */
+            /* @Update */
 
         }
     });
@@ -91,13 +91,13 @@ router.route(
 router.route(
     {
         "/another/:id": {
-            /* @view */
+            /* @View */
             component: [Component],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 3
             }
-            /* @update */
+            /* @Update */
 
         }
     });
@@ -105,13 +105,13 @@ router.route(
 router.route(
     {
         "/error": {
-            /* @view */
+            /* @View */
             component: [Component],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 404
             }
-            /* @update */
+            /* @Update */
 
         }
     });

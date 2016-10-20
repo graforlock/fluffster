@@ -10,9 +10,9 @@ router.defaultErrorHandler = false;
 router.route(
     {
         "/": {
-            /* @view */
+            /* @View */
             component: [HomePage],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 1
             }
@@ -22,9 +22,9 @@ router.route(
 router.route(
     {
         "/test": {
-            /* @view */
+            /* @View */
             component: [TestPage],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 2
             }
@@ -34,9 +34,9 @@ router.route(
 router.route(
     {
         "/another/:id": {
-            /* @view */
+            /* @View */
             component: [AnotherPage],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 3
             }
@@ -46,9 +46,9 @@ router.route(
 router.route(
     {
         "/error": {
-            /* @view */
+            /* @View */
             component: [NotFound],
-            /* @model */
+            /* @Model */
             appState: {
                 test: 404
             }
@@ -74,8 +74,11 @@ Additionally you'd have to provide additional mountpoint for each component:
 router.route(
     {
         "/": {
+            /* @View */
             component: [ComponentA, ComponentB],
+            /* @Id */
             id: ["#mount-a", "#mount-b"]
+            /* @Model */
             appState: {
                 test: 404
             }
