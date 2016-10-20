@@ -1,1 +1,1 @@
-module.exports = require('./dist/fluffster.js');
+module.exports = require('./dist');

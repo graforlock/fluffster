@@ -1,4 +1,4 @@
-var router = require('../src/router'),
+var router = require('../dist').router,
     compareTo = require('../src/utils').compareTo;
 
 var Component = {
@@ -19,7 +19,7 @@ var Component = {
     },
     render: function()
     {
-        console.log('render! test state is', Component.state);
+        console.log('render! test state is ' + JSON.stringify(Component.state));
 
         /* It will not re-render if state is the same */
         Component.update(Component.state);
