@@ -30,7 +30,6 @@ function State(state)
         }.bind(this);
 
         this.notify();
-        console.log(state);
         this.provide(state.component);
 
     } else
@@ -67,8 +66,9 @@ State.prototype.provide = function (components)
 {
     utils.each(components, function (component)
     {
-        component.subscribe(this.stream());
-    });
+        if(component.subscribe)
+            component.subscribe(this.stream());
+    }.bind(this));
 };
 
 module.exports = State;
