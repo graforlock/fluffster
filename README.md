@@ -50,7 +50,7 @@ router.route(
 router.listen();
 ```
 
-#### usage with React 
+# usage with React 
 
 If you want to use it with React, please prepend the code with:
 
