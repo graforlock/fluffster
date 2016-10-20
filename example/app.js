@@ -54,6 +54,7 @@ router.defaultErrorHandler = false;
 router.route(
     {
         "/": {
+
             component: [Component],
             appState: {
                 test: 1
@@ -62,14 +63,15 @@ router.route(
 
                 incrementTest: function (appState)
                 {
-                    return { test : appState.test + 1};
+                    return {test: appState.test + 1};
                 },
 
                 decrementTest: function (appState)
                 {
-                    return { test : appState.test - 1};
+                    return {test: appState.test - 1};
                 }
             }
+
         }
     });
 
@@ -81,27 +83,32 @@ router.route(
             appState: {
                 test: 2
             }
+
         }
     });
 
 router.route(
     {
         "/another/:id": {
+
             component: [Component],
             appState: {
                 test: 3
             }
         }
+
     });
 
 router.route(
     {
         "/error": {
+
             component: [Component],
             appState: {
                 test: 404
             }
         }
+
     });
 
 router.listen();
