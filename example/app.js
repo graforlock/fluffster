@@ -95,8 +95,8 @@ router.route(
             appState: {
                 test: 3
             }
-        }
 
+        }
     });
 
 router.route(
@@ -107,8 +107,8 @@ router.route(
             appState: {
                 test: 404
             }
-        }
 
+        }
     });
 
 router.listen();
