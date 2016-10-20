@@ -10,7 +10,9 @@ router.defaultErrorHandler = false;
 router.route(
     {
         "/": {
+            /* @view */
             component: [HomePage],
+            /* @model */
             appState: {
                 test: 1
             }
@@ -20,7 +22,9 @@ router.route(
 router.route(
     {
         "/test": {
+            /* @view */
             component: [TestPage],
+            /* @model */
             appState: {
                 test: 2
             }
@@ -30,7 +34,9 @@ router.route(
 router.route(
     {
         "/another/:id": {
+            /* @view */
             component: [AnotherPage],
+            /* @model */
             appState: {
                 test: 3
             }
@@ -40,7 +46,9 @@ router.route(
 router.route(
     {
         "/error": {
+            /* @view */
             component: [NotFound],
+            /* @model */
             appState: {
                 test: 404
             }
