@@ -62,12 +62,10 @@ router.route(
             },
             /* @Update */
             updates: {
-
                 incrementTest: function (appState)
                 {
                     return {test: appState.test + 1};
                 },
-
                 decrementTest: function (appState)
                 {
                     return {test: appState.test - 1};
