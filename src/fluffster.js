@@ -30,7 +30,7 @@ function State(state)
         }.bind(this);
 
         this.notify();
-        this.provide(state.component);
+        this.provide(state);
 
     } else
     {
@@ -62,9 +62,9 @@ State.prototype.resetState = function ()
     this.updateState(this.initState);
 };
 
-State.prototype.provide = function (components)
+State.prototype.provide = function (state)
 {
-    utils.each(components, function (component)
+    utils.each(state.component, function (component)
     {
         if(component.subscribe)
             component.subscribe(this.stream());
