@@ -1,8 +1,8 @@
 var React = require('react'),
     ReactDOM = require('react-dom');
 
-var State = require('./fluffster'),
-    each = require('./utils').each;
+var State = require('./../fluffster'),
+    each = require('./../utils/index').each;
 
 function ReactDecorator(Fluffster)
 {
@@ -15,7 +15,7 @@ function ReactDecorator(Fluffster)
 
             each(state.component, function (Component, index)
             {
-                ReactDOM.render(<Component {...appState} />, document.querySelector(state.id[index]));
+                ReactDOM.render(React.createElement(Component, appState), document.querySelector(state.id[index]));
             });
         });
     };
@@ -23,4 +23,4 @@ function ReactDecorator(Fluffster)
 }
 
 
-module.exports = ReactDecorator(State);
+module.exports = function() { return ReactDecorator(State) };

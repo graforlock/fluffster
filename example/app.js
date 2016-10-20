@@ -1,5 +1,4 @@
-var history = require('../src/services/history'),
-    router = require('../src/router'),
+var router = require('../src/router'),
     compareTo = require('../src/utils').compareTo;
 
 var Component = {
@@ -29,7 +28,7 @@ var Component = {
 
 setTimeout(function()
 {
-    history.push(
+    router.link(
         {
             pathname: '/test',
             search: ''
@@ -40,7 +39,8 @@ setTimeout(function()
 document.querySelector('#test-3').addEventListener('click', function(e)
 {
     e.preventDefault();
-    history.push(
+
+    router.link(
         {
             pathname: e.target.pathname,
             search: e.target.search
@@ -80,5 +80,5 @@ router.route(
         }
     });
 
-router.router(history.location);
-history.listen(router.router);
+router.listen();
+

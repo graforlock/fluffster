@@ -1,5 +1,7 @@
 var Resolve = require('./services/resolve');
 var State = require('./fluffster');
+var history = require('./services/history');
+var drivers = require('./drivers');
 
 var StateRouter = {
 
@@ -10,6 +12,11 @@ var StateRouter = {
     route: function (route)
     {
         StateRouter.routes.push(route);
+    },
+
+    driver: function (type)
+    {
+        State = drivers[type]();
     },
 
     render: function (route)
@@ -42,7 +49,19 @@ var StateRouter = {
                         .then(StateRouter.render);
                 }
             });
+    },
+
+    link: function(config)
+    {
+        history.push(config);
+    },
+
+    listen: function ()
+    {
+        StateRouter.router(history.location);
+        history.listen(StateRouter.router);
     }
 };
+
 
 module.exports = StateRouter;
