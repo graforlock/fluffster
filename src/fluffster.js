@@ -1,7 +1,7 @@
 var utils = require('./utils');
 var kefir = require('kefir');
 
-function State(state)
+function State(state, messages)
 {
     if (this instanceof State)
     {
@@ -9,6 +9,7 @@ function State(state)
         this._stream$ = kefir.pool();
         this.initState = state.appState;
         this.listeners = [];
+        if(messages) this.assignMessages(messages);
 
         this.onNext(function (state)
         {
@@ -25,14 +26,15 @@ function State(state)
             if (!utils.compareTo(this.state, comparator))
             {
                 utils.extend(this.state, newState);
-                this.notify(newState);
+                this.notify();
             }
         }.bind(this);
 
         this.notify();
         this.provide(state);
 
-    } else
+    }
+    else
     {
         return new State(state);
     }
@@ -69,6 +71,19 @@ State.prototype.provide = function (state)
         if(component.subscribe)
             component.subscribe(this.stream());
     }.bind(this));
+};
+
+State.prototype.passMessage = function(message, payload)
+{
+    if(message in this.messages)
+    {
+        this.updateState(this.messages[message](this.state, payload));
+    }
+};
+
+State.prototype.assignMessages = function(messages)
+{
+    this.messages = messages;
 };
 
 module.exports = State;

@@ -21,12 +21,13 @@ var StateRouter = {
 
     render: function (route)
     {
-        StateRouter.store = new State(route);
+        StateRouter.store = new State(route, route.messages);
     },
 
-    updateState: function (newState)
+    sendMessage: function (message, newState)
     {
-        if (StateRouter.store) StateRouter.store.updateState(newState);
+        if (StateRouter.store.messages)
+            StateRouter.store.passMessage(message, newState);
     },
 
     router: function (location)

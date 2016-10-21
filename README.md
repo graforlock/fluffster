@@ -7,6 +7,19 @@ Sample use :
 ```javascript
 router.defaultErrorHandler = false;
 
+router.appState(
+  {
+       /* @Global Model */
+       auth: false,
+       userDetails: {
+           username: "",
+           email: ""
+       },
+       update: {
+           
+       }
+  });
+
 router.route(
     {
         "/": {
@@ -77,7 +90,7 @@ router.route(
             /* @View */
             component: [ComponentA, ComponentB],
             /* @Id */
-            id: ["#mount-a", "#mount-b"]
+            id: ["#mount-a", "#mount-b"],
             /* @Model */
             appState: {
                 test: 404

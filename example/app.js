@@ -3,13 +3,11 @@ var router = require('../dist').router,
 
 var Component = {
     state: null,
+    app: document.getElementById('app'),
     update: function (newValue)
     {
-        if (!compareTo(newValue, Component.state))
-        {
             Component.state = newValue;
             Component.render();
-        }
     },
     subscribe: function (stream)
     {
@@ -20,22 +18,9 @@ var Component = {
     },
     render: function ()
     {
-        console.log('render! test state is ' + JSON.stringify(Component.state));
-
-        /* It will not re-render if state is the same */
-        Component.update(Component.state);
+        this.app.innerHTML = '<h1>render! test state is <br>' + JSON.stringify(Component.state) + '</h1>';
     }
 };
-
-setTimeout(function ()
-{
-    router.link(
-        {
-            pathname: '/test',
-            search: ''
-        });
-
-}, 3000);
 
 document.querySelector('#test-3').addEventListener('click', function (e)
 {
@@ -46,6 +31,10 @@ document.querySelector('#test-3').addEventListener('click', function (e)
             pathname: e.target.pathname,
             search: e.target.search
         });
+});
+
+document.querySelector('#increment-message').addEventListener('click', function() {
+    router.sendMessage('incrementTest');
 });
 
 
@@ -59,17 +48,6 @@ router.route(
             /* @Model */
             appState: {
                 test: 1
-            },
-            /* @Update */
-            updates: {
-                incrementTest: function (appState)
-                {
-                    return {test: appState.test + 1};
-                },
-                decrementTest: function (appState)
-                {
-                    return {test: appState.test - 1};
-                }
             }
         }
     });
@@ -82,9 +60,18 @@ router.route(
             /* @Model */
             appState: {
                 test: 2
+            },
+            /* @Messages */
+            messages: {
+                incrementTest: function (appState)
+                {
+                    return {test: appState.test + 1};
+                },
+                decrementTest: function (appState)
+                {
+                    return {test: appState.test - 1};
+                }
             }
-            /* @Update */
-
         }
     });
 
