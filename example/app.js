@@ -1,15 +1,32 @@
 var router = require('../dist').router,
     h = require('virtual-dom/h'),
+    diff = require('virtual-dom/diff'),
     createElement = require('virtual-dom/create-element');
 
 
 var Component = {
-    state: null,
+    state: { test: 0 },
     app: document.getElementById('app'),
     update: function (newValue)
     {
             Component.state = newValue;
-            Component.render();
+            Component.diffTree();
+    },
+    diffTree: function()
+    {
+        if(!this.tree)
+        {
+            this.tree = this.render();
+            this.init();
+        }
+        else
+        {
+            diff(this.tree, this.render());
+        }
+    },
+    init: function()
+    {
+        this.app.appendChild(this.tree);
     },
     subscribe: function (stream)
     {
@@ -18,13 +35,12 @@ var Component = {
             Component.update(value);
         });
     },
-    render: function ()
+    render: function()
     {
-        this.app.appendChild(
-            createElement(
-                h('h1',
-                    {},
-                    ['render! test state is ' + JSON.stringify(Component.state.test)])));
+        return createElement(
+            h('h1',
+                {},
+                ['render! test state is ' + JSON.stringify(Component.state.test)]));
     }
 };
 
