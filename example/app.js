@@ -1,5 +1,7 @@
 var router = require('../dist').router,
-    compareTo = require('../src/utils').compareTo;
+    h = require('virtual-dom/h'),
+    createElement = require('virtual-dom/create-element');
+
 
 var Component = {
     state: null,
@@ -18,7 +20,11 @@ var Component = {
     },
     render: function ()
     {
-        this.app.innerHTML = '<h1>render! test state is <br>' + JSON.stringify(Component.state) + '</h1>';
+        this.app.appendChild(
+            createElement(
+                h('h1',
+                    {},
+                    ['render! test state is ' + JSON.stringify(Component.state.test)])));
     }
 };
 
