@@ -2,6 +2,8 @@
 
 A lightweight state container based on reactive streams.
 
+NOTE: This repository is not maintained/developed in ES6 for the sake of its lightweight nature and compatibility. There will be attempts to converting the code to UMD compatible format in future, however.
+
 Sample use :
 
 ```javascript
