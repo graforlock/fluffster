@@ -22,7 +22,7 @@ var Component = {
         }
         else
         {
-            diff(this.tree, this.render());
+            diff(this.render(), this.tree);
         }
     },
 
@@ -35,6 +35,7 @@ var Component = {
     {
         stream.onValue(function (value)
         {
+            console.log(value);
             Component.update(value);
         });
     },

@@ -1,7 +1,7 @@
 var router = require('../dist').router,
-    container = require('../dist/container'),
-
     Component = require('./component');
+
+var kefir = require('kefir');
 
 document.querySelector('#test-3').addEventListener('click', function (e)
 {
@@ -15,13 +15,8 @@ document.querySelector('#test-3').addEventListener('click', function (e)
 });
 
 document.querySelector('#increment-message').addEventListener('click', function() {
-    router.send('incrementTest');
+    router.sendMessage('incrementTest');
 });
-
-container({ appState: { test: 4 }, component: [Component]});
-
-console.log(container);
-
 
 router.defaultErrorHandler = false;
 
@@ -89,4 +84,3 @@ router.route(
     });
 
 router.listen();
-
