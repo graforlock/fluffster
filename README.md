@@ -9,16 +9,13 @@ Sample use :
 ```javascript
 router.defaultErrorHandler = false;
 
-router.appState(
+router.global(
   {
        /* @Global Model */
        auth: false,
        userDetails: {
            username: "",
            email: ""
-       },
-       update: {
-           
        }
   });
 
@@ -30,6 +27,13 @@ router.route(
             /* @Model */
             appState: {
                 test: 1
+            },
+            /* @Messages */
+            messages: {
+                 identity: function(appState)
+                 {
+                       return appState;
+                 }
             }
         }
     });
