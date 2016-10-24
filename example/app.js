@@ -20,6 +20,11 @@ document.querySelector('#increment-message').addEventListener('click', function(
 
 router.defaultErrorHandler = false;
 
+router.global(
+    {
+       hello: "Hello"
+    });
+
 router.route(
     {
         "/": {
