@@ -35,7 +35,6 @@ var StateRouter = {
     {
         if (StateRouter.globalState)
         {
-
             StateRouter.globalState.onValue(function (globalState)
             {
                 StateRouter.store = new State(utils.extendMany({}, {globalState: globalState}, route), route.messages);
@@ -44,7 +43,6 @@ var StateRouter = {
         }
 
         StateRouter.store = new State(route, route.messages);
-
     },
 
     sendMessage: function (message, newState)

@@ -10,7 +10,6 @@ function State(state, messages)
             : state.appState;
 
         this._stream$ = kefir.pool();
-        this.initState = state.appState;
         this.listeners = [];
         if (messages) this.assignMessages(messages);
 
@@ -69,11 +68,6 @@ State.prototype.combine = function (stream)
         return utils.extendMany({}, a, b);
     }));
 
-};
-
-State.prototype.resetState = function ()
-{
-    this.updateState(this.initState);
 };
 
 State.prototype.provide = function (state)
