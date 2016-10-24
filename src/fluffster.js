@@ -5,11 +5,14 @@ function State(state, messages)
 {
     if (this instanceof State)
     {
-        this.state = state.appState;
+        this.state = state.globalState
+            ? utils.extendMany({}, state.appState, state.globalState)
+            : state.appState;
+
         this._stream$ = kefir.pool();
         this.initState = state.appState;
         this.listeners = [];
-        if(messages) this.assignMessages(messages);
+        if (messages) this.assignMessages(messages);
 
         this.onNext(function (state)
         {
@@ -59,6 +62,15 @@ State.prototype.stream = function ()
     return this._stream$;
 };
 
+State.prototype.combine = function (stream)
+{
+    this._stream$.plug(kefir.combine([this.stream(), stream], function (a, b)
+    {
+        return utils.extendMany({}, a, b);
+    }));
+
+};
+
 State.prototype.resetState = function ()
 {
     this.updateState(this.initState);
@@ -68,20 +80,20 @@ State.prototype.provide = function (state)
 {
     utils.each(state.component, function (component)
     {
-        if(component.subscribe)
+        if (component.subscribe)
             component.subscribe(this.stream());
     }.bind(this));
 };
 
-State.prototype.passMessage = function(message, payload)
+State.prototype.passMessage = function (message, payload)
 {
-    if(message in this.messages)
+    if (message in this.messages)
     {
         this.updateState(this.messages[message](this.state, payload));
     }
 };
 
-State.prototype.assignMessages = function(messages)
+State.prototype.assignMessages = function (messages)
 {
     this.messages = messages;
 };
