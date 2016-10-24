@@ -5,7 +5,7 @@ function State(state, messages, streamB$)
 {
     if (this instanceof State)
     {
-        this.state = state.appState;
+        this.state = { appState: state.appState };
 
         this._streamA$ = kefir.pool();
         this._streamB$ = streamB$;
@@ -15,7 +15,7 @@ function State(state, messages, streamB$)
         this._combined$ = this._streamA$ && this._streamB$
             ? kefir.combine([this._streamA$, this._streamB$], function (a, b)
             {
-                return utils.extendMany({}, a, b);
+                return utils.extendMany({}, {appState: a}, {global: b});
             })
             : false;
 
@@ -60,7 +60,6 @@ State.prototype.provide = function ()
             {
                 if (component.subscribe)
                     component.subscribe(state);
-
             }.bind(this));
         }.bind(this)
     );

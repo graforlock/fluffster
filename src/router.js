@@ -24,6 +24,7 @@ var StateRouter = {
     global: function (state)
     {
         StateRouter.globalState = kefir.pool();
+        StateRouter.property = StateRouter.globalState.toProperty();
         StateRouter.globalState.plug(kefir.stream(function (emitter)
         {
             return emitter.emit(state)
@@ -34,7 +35,7 @@ var StateRouter = {
     {
         if (StateRouter.globalState)
         {
-            StateRouter.store = new State(route, route.messages, StateRouter.globalState);
+            StateRouter.store = new State(route, route.messages, StateRouter.property);
             return;
         }
 
@@ -50,7 +51,10 @@ var StateRouter = {
     router: function (location)
     {
         Resolve(StateRouter.routes, location)
-            .then(StateRouter.render)
+            .then(function(route)
+            {
+                return StateRouter.render(route);
+            })
             .catch(function (error)
             {
                 /* Log error at all times. */
