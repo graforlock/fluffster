@@ -2,29 +2,31 @@ var kefir = require('kefir');
 
 module.exports = {
 
-    compareTo: function (a, b) /* :boolean */
+    compareTo: function (a, b) /* -> boolean */
     {
         /* Compares data object using simple string comparison. */
 
         return JSON.stringify(a) === JSON.stringify(b);
     },
 
-    each: function (elements, fn) /* :void */
+    each: function (elements, fn) /* -> void */
     {
         /* A minimal forEach implementation, just like underscore's _.each() .*/
 
         for (var i = 0; i < elements.length && !fn(elements[i], i++););
     },
 
-    emit: function(state)
+    emit: function(state) /* -> stream */
     {
+        /* Emits the stream. */
+
         return kefir.stream(function (emitter)
         {
             return emitter.emit(state);
         })
     },
 
-    extend: function (obj, extension) /* :void */
+    extend: function (obj, extension) /* -> void */
     {
         /* Extends object in place. Beware, mutable! */
 
@@ -34,13 +36,12 @@ module.exports = {
         }
     },
 
-    extendMany: function () /* :object */
+    extendMany: function () /* -> object */
     {
         /* Extends/reduces objects and returns a new object. */
 
         return [].slice.call(arguments).reduce(function (a, b)
         {
-
             for (var key in b)
             {
                 a[key] = b[key];
