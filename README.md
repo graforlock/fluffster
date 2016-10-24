@@ -9,10 +9,25 @@ Sample use :
 ```javascript
 router.defaultErrorHandler = false;
 
+router.appState(
+  {
+       /* @Global Model */
+       auth: false,
+       userDetails: {
+           username: "",
+           email: ""
+       },
+       update: {
+           
+       }
+  });
+
 router.route(
     {
         "/": {
+            /* @View */
             component: [HomePage],
+            /* @Model */
             appState: {
                 test: 1
             }
@@ -22,7 +37,9 @@ router.route(
 router.route(
     {
         "/test": {
+            /* @View */
             component: [TestPage],
+            /* @Model */
             appState: {
                 test: 2
             }
@@ -32,7 +49,9 @@ router.route(
 router.route(
     {
         "/another/:id": {
+            /* @View */
             component: [AnotherPage],
+            /* @Model */
             appState: {
                 test: 3
             }
@@ -42,7 +61,9 @@ router.route(
 router.route(
     {
         "/error": {
+            /* @View */
             component: [NotFound],
+            /* @Model */
             appState: {
                 test: 404
             }
@@ -68,8 +89,11 @@ Additionally you'd have to provide additional mountpoint for each component:
 router.route(
     {
         "/": {
+            /* @View */
             component: [ComponentA, ComponentB],
-            id: ["#mount-a", "#mount-b"]
+            /* @Id */
+            id: ["#mount-a", "#mount-b"],
+            /* @Model */
             appState: {
                 test: 404
             }

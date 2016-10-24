@@ -2,10 +2,13 @@ var Resolve = require('./services/resolve');
 var State = require('./fluffster');
 var history = require('./services/history');
 var drivers = require('./drivers');
+var kefir = require('kefir');
+var utils = require('./utils');
 
 var StateRouter = {
 
     store: null,
+    globalState: null,
     routes: [],
     defaultErrorHandler: true,
 
@@ -19,14 +22,33 @@ var StateRouter = {
         State = drivers[type]();
     },
 
-    render: function (route)
+    global: function (state)
     {
-        StateRouter.store = new State(route);
+        StateRouter.globalState = kefir.pool();
+        StateRouter.globalState.plug(kefir.stream(function (emitter)
+        {
+            return emitter.emit(state)
+        }));
     },
 
-    updateState: function (newState)
+    render: function (route)
     {
-        if (StateRouter.store) StateRouter.store.updateState(newState);
+        if (StateRouter.globalState)
+        {
+            StateRouter.globalState.onValue(function (globalState)
+            {
+                StateRouter.store = new State(utils.extendMany({}, {globalState: globalState}, route), route.messages);
+            });
+            return;
+        }
+
+        StateRouter.store = new State(route, route.messages);
+    },
+
+    sendMessage: function (message, newState)
+    {
+        if (StateRouter.store.messages)
+            StateRouter.store.passMessage(message, newState);
     },
 
     router: function (location)
@@ -51,7 +73,7 @@ var StateRouter = {
             });
     },
 
-    link: function(config)
+    link: function (config)
     {
         history.push(config);
     },

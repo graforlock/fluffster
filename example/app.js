@@ -1,42 +1,9 @@
 var router = require('../dist').router,
-    compareTo = require('../src/utils').compareTo;
+    Component = require('./component');
 
-var Component = {
-    state: null,
-    update: function(newValue) {
-        if(!compareTo(newValue, Component.state))
-        {
-            Component.state = newValue;
-            Component.render();
-        }
-    },
-    subscribe: function (stream)
-    {
-        stream.onValue(function (value)
-        {
-            Component.update(value);
-        });
-    },
-    render: function()
-    {
-        console.log('render! test state is ' + JSON.stringify(Component.state));
+var kefir = require('kefir');
 
-        /* It will not re-render if state is the same */
-        Component.update(Component.state);
-    }
-};
-
-setTimeout(function()
-{
-    router.link(
-        {
-            pathname: '/test',
-            search: ''
-        });
-
-},3000);
-
-document.querySelector('#test-3').addEventListener('click', function(e)
+document.querySelector('#test-3').addEventListener('click', function (e)
 {
     e.preventDefault();
 
@@ -47,14 +14,23 @@ document.querySelector('#test-3').addEventListener('click', function(e)
         });
 });
 
+document.querySelector('#increment-message').addEventListener('click', function() {
+    router.sendMessage('incrementTest');
+});
 
 router.defaultErrorHandler = false;
+
+router.global(
+    {
+       hello: "Hello"
+    });
 
 router.route(
     {
         "/": {
+            /* @View */
             component: [Component],
-            id: [],
+            /* @Model */
             appState: {
                 test: 1
             }
@@ -64,10 +40,22 @@ router.route(
 router.route(
     {
         "/test": {
+            /* @View */
             component: [Component],
-            id: [],
+            /* @Model */
             appState: {
                 test: 2
+            },
+            /* @Messages */
+            messages: {
+                incrementTest: function (appState)
+                {
+                    return {test: appState.test + 1};
+                },
+                decrementTest: function (appState)
+                {
+                    return {test: appState.test - 1};
+                }
             }
         }
     });
@@ -75,24 +63,29 @@ router.route(
 router.route(
     {
         "/another/:id": {
+            /* @View */
             component: [Component],
-            id: [],
+            /* @Model */
             appState: {
                 test: 3
             }
+            /* @Update */
+
         }
     });
 
 router.route(
     {
         "/error": {
+            /* @View */
             component: [Component],
-            id: [],
+            /* @Model */
             appState: {
                 test: 404
             }
+            /* @Update */
+
         }
     });
 
 router.listen();
-
