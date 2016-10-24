@@ -10,6 +10,8 @@ function State(state, messages, streamB$)
         this._streamA$ = kefir.pool();
         this._streamB$ = streamB$;
 
+        this.component = state.component;
+
         this._combined$ = this._streamA$ && this._streamB$
             ? kefir.combine([this._streamA$, this._streamB$], function (a, b)
             {
@@ -41,7 +43,7 @@ function State(state, messages, streamB$)
         }.bind(this);
 
         this.notify();
-        this.provide(state);
+        this.provide();
 
     }
     else
@@ -77,13 +79,18 @@ State.prototype.combine = function (stream)
     }));
 };
 
-State.prototype.provide = function (state)
+State.prototype.provide = function ()
 {
-    utils.each(state.component, function (component)
-    {
-        if (component.subscribe)
-            component.subscribe(this.stream());
-    }.bind(this));
+    this.stream().onValue(function(state)
+        {
+            utils.each(this.component, function (component)
+            {
+                if (component.subscribe)
+                    component.subscribe(state);
+
+            }.bind(this));
+        }.bind(this)
+    );
 };
 
 State.prototype.passMessage = function (message, payload)

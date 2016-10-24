@@ -3,7 +3,7 @@ module.exports={react:require("./react-driver")};
 },{"./react-driver":2}],2:[function(require,module,exports){
 function ReactDecorator(e){return e.prototype.provide=function(e){this.stream().onValue(function(t){each(e.component,function(r,c){ReactDOM.render(React.createElement(r,t),document.querySelector(e.id[c]))})})},e}var React=require("react"),ReactDOM=require("react-dom"),State=require("./../fluffster"),each=require("./../utils/index").each;module.exports=function(){return ReactDecorator(State)};
 },{"./../fluffster":3,"./../utils/index":8,"react":200,"react-dom":57}],3:[function(require,module,exports){
-function State(t,e,s){return this instanceof State?(this.state=t.appState,this._streamA$=kefir.pool(),this._streamB$=s,this._combined$=!(!this._streamA$||!this._streamB$)&&kefir.combine([this._streamA$,this._streamB$],function(t,e){return utils.extendMany({},t,e)}),this.listeners=[],e&&this.assignMessages(e),this.onNext(function(t){this._streamA$.plug(kefir.stream(function(e){return e.emit(t)}))}.bind(this)),this.updateState=function(t){var e=utils.extendMany({},this.state,t);utils.compareTo(this.state,e)||(utils.extend(this.state,t),this.notify())}.bind(this),this.notify(),this.provide(t),void 0):new State(t)}var utils=require("./utils"),kefir=require("kefir");State.prototype.notify=function(t){t=t||this.state;for(var e=0;e<this.listeners.length;e++)this.listeners[e](t)},State.prototype.onNext=function(t){this.listeners.push(t)},State.prototype.stream=function(){return this._combined$?this._combined$:this._streamA$},State.prototype.combine=function(t){this._streamA$.plug(kefir.combine([this.stream(),t],function(t,e){return utils.extendMany({},t,e)}))},State.prototype.provide=function(t){utils.each(t.component,function(t){t.subscribe&&t.subscribe(this.stream())}.bind(this))},State.prototype.passMessage=function(t,e){t in this.messages&&this.updateState(this.messages[t](this.state,e))},State.prototype.assignMessages=function(t){this.messages=t},module.exports=State;
+function State(t,e,s){return this instanceof State?(this.state=t.appState,this._streamA$=kefir.pool(),this._streamB$=s,this.component=t.component,this._combined$=!(!this._streamA$||!this._streamB$)&&kefir.combine([this._streamA$,this._streamB$],function(t,e){return utils.extendMany({},t,e)}),this.listeners=[],e&&this.assignMessages(e),this.onNext(function(t){this._streamA$.plug(kefir.stream(function(e){return e.emit(t)}))}.bind(this)),this.updateState=function(t){var e=utils.extendMany({},this.state,t);utils.compareTo(this.state,e)||(utils.extend(this.state,t),this.notify())}.bind(this),this.notify(),this.provide(),void 0):new State(t)}var utils=require("./utils"),kefir=require("kefir");State.prototype.notify=function(t){t=t||this.state;for(var e=0;e<this.listeners.length;e++)this.listeners[e](t)},State.prototype.onNext=function(t){this.listeners.push(t)},State.prototype.stream=function(){return this._combined$?this._combined$:this._streamA$},State.prototype.combine=function(t){this._streamA$.plug(kefir.combine([this.stream(),t],function(t,e){return utils.extendMany({},t,e)}))},State.prototype.provide=function(){this.stream().onValue(function(t){utils.each(this.component,function(e){e.subscribe&&e.subscribe(t)}.bind(this))}.bind(this))},State.prototype.passMessage=function(t,e){t in this.messages&&this.updateState(this.messages[t](this.state,e))},State.prototype.assignMessages=function(t){this.messages=t},module.exports=State;
 },{"./utils":8,"kefir":54}],4:[function(require,module,exports){
 module.exports={state:require("./fluffster"),router:require("./router")};
 },{"./fluffster":3,"./router":5}],5:[function(require,module,exports){
@@ -141,10 +141,9 @@ var Component = {
 
     subscribe: function (stream)
     {
-        stream.onValue(function (value)
-        {
-            Component.update(value);
-        });
+        console.log(stream);
+        Component.update(stream);
+
     },
 
     render: function ()

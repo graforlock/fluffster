@@ -33,10 +33,12 @@ var Component = {
 
     subscribe: function (stream)
     {
-        stream.onValue(function (value)
-        {
-            Component.update(value);
-        });
+        Component.update(stream);
+    },
+
+    unsubscribe: function()
+    {
+        this.subscribe = null;
     },
 
     render: function ()
