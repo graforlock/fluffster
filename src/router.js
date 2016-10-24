@@ -35,6 +35,7 @@ var StateRouter = {
         if (StateRouter.globalState)
         {
             StateRouter.store = new State(route, route.messages, StateRouter.globalState);
+            return;
         }
 
         StateRouter.store = new State(route, route.messages, null);

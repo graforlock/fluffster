@@ -23,14 +23,10 @@ function State(state, messages, streamB$)
 
         if (messages) this.assignMessages(messages);
 
-        this.onNext(function (state)
+        this.onNext = function (state)
         {
-            this._streamA$.plug(
-                kefir.stream(function (emitter)
-                {
-                    return emitter.emit(state)
-                }));
-        }.bind(this));
+            this._streamA$.plug(utils.emit(state));
+        }.bind(this);
 
         this.updateState = function (newState)
         {
@@ -38,13 +34,12 @@ function State(state, messages, streamB$)
             if (!utils.compareTo(this.state, comparator))
             {
                 utils.extend(this.state, newState);
-                this.notify();
+                this.onNext(this.state);
             }
         }.bind(this);
 
-        this.notify();
+        this.onNext(this.state);
         this.provide();
-
     }
     else
     {
@@ -52,36 +47,14 @@ function State(state, messages, streamB$)
     }
 }
 
-State.prototype.notify = function (newState)
-{
-    newState = newState || this.state;
-    for (var i = 0; i < this.listeners.length; i++)
-    {
-        this.listeners[i](newState);
-    }
-};
-
-State.prototype.onNext = function (next)
-{
-    this.listeners.push(next);
-};
-
 State.prototype.stream = function ()
 {
     return this._combined$ ? this._combined$ : this._streamA$;
 };
 
-State.prototype.combine = function (stream)
-{
-    this._streamA$.plug(kefir.combine([this.stream(), stream], function (a, b)
-    {
-        return utils.extendMany({}, a, b);
-    }));
-};
-
 State.prototype.provide = function ()
 {
-    this.stream().onValue(function(state)
+    this.stream().onValue(function (state)
         {
             utils.each(this.component, function (component)
             {

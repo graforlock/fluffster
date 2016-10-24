@@ -1,3 +1,5 @@
+var kefir = require('kefir');
+
 module.exports = {
 
     compareTo: function (a, b) /* :boolean */
@@ -12,6 +14,14 @@ module.exports = {
         /* A minimal forEach implementation, just like underscore's _.each() .*/
 
         for (var i = 0; i < elements.length && !fn(elements[i], i++););
+    },
+
+    emit: function(state)
+    {
+        return kefir.stream(function (emitter)
+        {
+            return emitter.emit(state);
+        })
     },
 
     extend: function (obj, extension) /* :void */

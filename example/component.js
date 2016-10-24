@@ -33,6 +33,7 @@ var Component = {
 
     subscribe: function (stream)
     {
+        console.log(stream);
         Component.update(stream);
     },
 

@@ -12,7 +12,8 @@ document.querySelector('#test-3').addEventListener('click', function (e)
         });
 });
 
-document.querySelector('#increment-message').addEventListener('click', function() {
+document.querySelector('#increment-message').addEventListener('click', function ()
+{
     router.sendMessage('incrementTest');
 });
 
@@ -20,7 +21,7 @@ router.defaultErrorHandler = false;
 
 router.global(
     {
-     hello: "Hello"
+        hello: "Hello"
     });
 
 router.route(
