@@ -1,8 +1,6 @@
 var router = require('../dist').router,
     Component = require('./component');
 
-var kefir = require('kefir');
-
 document.querySelector('#test-3').addEventListener('click', function (e)
 {
     e.preventDefault();
@@ -22,7 +20,7 @@ router.defaultErrorHandler = false;
 
 router.global(
     {
-       hello: "Hello"
+     hello: "Hello"
     });
 
 router.route(

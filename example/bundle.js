@@ -3,12 +3,12 @@ module.exports={react:require("./react-driver")};
 },{"./react-driver":2}],2:[function(require,module,exports){
 function ReactDecorator(e){return e.prototype.provide=function(e){this.stream().onValue(function(t){each(e.component,function(r,c){ReactDOM.render(React.createElement(r,t),document.querySelector(e.id[c]))})})},e}var React=require("react"),ReactDOM=require("react-dom"),State=require("./../fluffster"),each=require("./../utils/index").each;module.exports=function(){return ReactDecorator(State)};
 },{"./../fluffster":3,"./../utils/index":8,"react":200,"react-dom":57}],3:[function(require,module,exports){
-function State(t,e){return this instanceof State?(this.state=t.globalState?utils.extendMany({},t.appState,t.globalState):t.appState,this._stream$=kefir.pool(),this.initState=t.appState,this.listeners=[],e&&this.assignMessages(e),this.onNext(function(t){this._stream$.plug(kefir.stream(function(e){return e.emit(t)}))}.bind(this)),this.updateState=function(t){var e=utils.extendMany({},this.state,t);utils.compareTo(this.state,e)||(utils.extend(this.state,t),this.notify())}.bind(this),this.notify(),this.provide(t),void 0):new State(t)}var utils=require("./utils"),kefir=require("kefir");State.prototype.notify=function(t){t=t||this.state;for(var e=0;e<this.listeners.length;e++)this.listeners[e](t)},State.prototype.onNext=function(t){this.listeners.push(t)},State.prototype.stream=function(){return this._stream$},State.prototype.combine=function(t){this._stream$.plug(kefir.combine([this.stream(),t],function(t,e){return utils.extendMany({},t,e)}))},State.prototype.resetState=function(){this.updateState(this.initState)},State.prototype.provide=function(t){utils.each(t.component,function(t){t.subscribe&&t.subscribe(this.stream())}.bind(this))},State.prototype.passMessage=function(t,e){t in this.messages&&this.updateState(this.messages[t](this.state,e))},State.prototype.assignMessages=function(t){this.messages=t},module.exports=State;
+function State(t,e,s){return this instanceof State?(this.state=t.appState,this._streamA$=kefir.pool(),this._streamB$=s,this._combined$=!(!this._streamA$||!this._streamB$)&&kefir.combine([this._streamA$,this._streamB$],function(t,e){return utils.extendMany({},t,e)}),this.listeners=[],e&&this.assignMessages(e),this.onNext(function(t){this._streamA$.plug(kefir.stream(function(e){return e.emit(t)}))}.bind(this)),this.updateState=function(t){var e=utils.extendMany({},this.state,t);utils.compareTo(this.state,e)||(utils.extend(this.state,t),this.notify())}.bind(this),this.notify(),this.provide(t),void 0):new State(t)}var utils=require("./utils"),kefir=require("kefir");State.prototype.notify=function(t){t=t||this.state;for(var e=0;e<this.listeners.length;e++)this.listeners[e](t)},State.prototype.onNext=function(t){this.listeners.push(t)},State.prototype.stream=function(){return this._combined$?this._combined$:this._streamA$},State.prototype.combine=function(t){this._streamA$.plug(kefir.combine([this.stream(),t],function(t,e){return utils.extendMany({},t,e)}))},State.prototype.provide=function(t){utils.each(t.component,function(t){t.subscribe&&t.subscribe(this.stream())}.bind(this))},State.prototype.passMessage=function(t,e){t in this.messages&&this.updateState(this.messages[t](this.state,e))},State.prototype.assignMessages=function(t){this.messages=t},module.exports=State;
 },{"./utils":8,"kefir":54}],4:[function(require,module,exports){
 module.exports={state:require("./fluffster"),router:require("./router")};
 },{"./fluffster":3,"./router":5}],5:[function(require,module,exports){
-var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),utils=require("./utils"),StateRouter={store:null,globalState:null,routes:[],defaultErrorHandler:!0,route:function(e){StateRouter.routes.push(e)},driver:function(e){State=drivers[e]()},global:function(e){StateRouter.globalState=kefir.pool(),StateRouter.globalState.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){return StateRouter.globalState?void StateRouter.globalState.onValue(function(t){StateRouter.store=new State(utils.extendMany({},{globalState:t},e),e.messages)}):void(StateRouter.store=new State(e,e.messages))},sendMessage:function(e,t){StateRouter.store.messages&&StateRouter.store.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(StateRouter.render).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler||Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render)})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)}};module.exports=StateRouter;
-},{"./drivers":1,"./fluffster":3,"./services/history":6,"./services/resolve":7,"./utils":8,"kefir":54}],6:[function(require,module,exports){
+var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),StateRouter={store:null,globalState:null,routes:[],defaultErrorHandler:!0,route:function(e){StateRouter.routes.push(e)},driver:function(e){State=drivers[e]()},global:function(e){StateRouter.globalState=kefir.pool(),StateRouter.globalState.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){StateRouter.globalState&&(StateRouter.store=new State(e,e.messages,StateRouter.globalState)),StateRouter.store=new State(e,e.messages,null)},sendMessage:function(e,t){StateRouter.store.messages&&StateRouter.store.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(StateRouter.render).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler||Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render)})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)}};module.exports=StateRouter;
+},{"./drivers":1,"./fluffster":3,"./services/history":6,"./services/resolve":7,"kefir":54}],6:[function(require,module,exports){
 module.exports=require("history").createBrowserHistory();
 },{"history":48}],7:[function(require,module,exports){
 function matchURI(e,r){var t=[],o=toRegex(e,t),n=o.exec(r);if(!n)return null;for(var a=Object.create(null),u=1;u<n.length;u++)a[t[u-1].name]=void 0!==n[u]?n[u]:void 0;return a}function Resolve(e,r){return new Promise(function(t,o){for(var n=0;n<e.length;n++){var a=e[n],u=Object.keys(a)[0],i=r.error?"/error":r.pathname,v=matchURI(u,i);if(v){var l=a;if(l[u].appState.params=v,l)return t(l[u])}}var c=new Error("Not found");return c.status=404,o(c)})}var toRegex=require("path-to-regexp"),Promise=require("bluebird");module.exports=Resolve;
@@ -17,8 +17,6 @@ module.exports={compareTo:function(n,r){return JSON.stringify(n)===JSON.stringif
 },{}],9:[function(require,module,exports){
 var router = require('../dist').router,
     Component = require('./component');
-
-var kefir = require('kefir');
 
 document.querySelector('#test-3').addEventListener('click', function (e)
 {
@@ -36,6 +34,11 @@ document.querySelector('#increment-message').addEventListener('click', function(
 });
 
 router.defaultErrorHandler = false;
+
+router.global(
+    {
+     hello: "Hello"
+    });
 
 router.route(
     {
@@ -102,14 +105,14 @@ router.route(
 
 router.listen();
 
-},{"../dist":4,"./component":10,"kefir":54}],10:[function(require,module,exports){
+},{"../dist":4,"./component":10}],10:[function(require,module,exports){
 var h = require('virtual-dom/h'),
     diff = require('virtual-dom/diff'),
     createElement = require('virtual-dom/create-element');
 
 var Component = {
 
-    state: { test: 0 },
+    state: {test: 0},
     app: document.getElementById('app'),
 
     update: function (newValue)
@@ -118,9 +121,9 @@ var Component = {
         Component.diffTree();
     },
 
-    diffTree: function()
+    diffTree: function ()
     {
-        if(!this.tree)
+        if (!this.tree)
         {
             this.tree = this.render();
             this.init();
@@ -131,7 +134,7 @@ var Component = {
         }
     },
 
-    init: function()
+    init: function ()
     {
         this.app.appendChild(this.tree);
     },
@@ -140,17 +143,20 @@ var Component = {
     {
         stream.onValue(function (value)
         {
-            console.log(value);
             Component.update(value);
         });
     },
 
-    render: function()
+    render: function ()
     {
         return createElement(
             h('h1',
                 {},
-                ['render! test state is ' + JSON.stringify(Component.state.test)]));
+                [
+                    h('p', {}, ['render! test state is ']),
+                    h('p', {}, [JSON.stringify(Component.state)])
+                ]
+            ));
     }
 
 };

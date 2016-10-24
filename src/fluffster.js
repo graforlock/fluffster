@@ -1,21 +1,29 @@
 var utils = require('./utils');
 var kefir = require('kefir');
 
-function State(state, messages)
+function State(state, messages, streamB$)
 {
     if (this instanceof State)
     {
-        this.state = state.globalState
-            ? utils.extendMany({}, state.appState, state.globalState)
-            : state.appState;
+        this.state = state.appState;
 
-        this._stream$ = kefir.pool();
+        this._streamA$ = kefir.pool();
+        this._streamB$ = streamB$;
+
+        this._combined$ = this._streamA$ && this._streamB$
+            ? kefir.combine([this._streamA$, this._streamB$], function (a, b)
+            {
+                return utils.extendMany({}, a, b);
+            })
+            : false;
+
         this.listeners = [];
+
         if (messages) this.assignMessages(messages);
 
         this.onNext(function (state)
         {
-            this._stream$.plug(
+            this._streamA$.plug(
                 kefir.stream(function (emitter)
                 {
                     return emitter.emit(state)
@@ -58,16 +66,15 @@ State.prototype.onNext = function (next)
 
 State.prototype.stream = function ()
 {
-    return this._stream$;
+    return this._combined$ ? this._combined$ : this._streamA$;
 };
 
 State.prototype.combine = function (stream)
 {
-    this._stream$.plug(kefir.combine([this.stream(), stream], function (a, b)
+    this._streamA$.plug(kefir.combine([this.stream(), stream], function (a, b)
     {
         return utils.extendMany({}, a, b);
     }));
-
 };
 
 State.prototype.provide = function (state)

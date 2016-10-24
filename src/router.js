@@ -3,7 +3,6 @@ var State = require('./fluffster');
 var history = require('./services/history');
 var drivers = require('./drivers');
 var kefir = require('kefir');
-var utils = require('./utils');
 
 var StateRouter = {
 
@@ -35,14 +34,10 @@ var StateRouter = {
     {
         if (StateRouter.globalState)
         {
-            StateRouter.globalState.onValue(function (globalState)
-            {
-                StateRouter.store = new State(utils.extendMany({}, {globalState: globalState}, route), route.messages);
-            });
-            return;
+            StateRouter.store = new State(route, route.messages, StateRouter.globalState);
         }
 
-        StateRouter.store = new State(route, route.messages);
+        StateRouter.store = new State(route, route.messages, null);
     },
 
     sendMessage: function (message, newState)

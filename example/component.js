@@ -4,7 +4,7 @@ var h = require('virtual-dom/h'),
 
 var Component = {
 
-    state: { test: 0 },
+    state: {test: 0},
     app: document.getElementById('app'),
 
     update: function (newValue)
@@ -13,9 +13,9 @@ var Component = {
         Component.diffTree();
     },
 
-    diffTree: function()
+    diffTree: function ()
     {
-        if(!this.tree)
+        if (!this.tree)
         {
             this.tree = this.render();
             this.init();
@@ -26,7 +26,7 @@ var Component = {
         }
     },
 
-    init: function()
+    init: function ()
     {
         this.app.appendChild(this.tree);
     },
@@ -35,17 +35,20 @@ var Component = {
     {
         stream.onValue(function (value)
         {
-            console.log(value);
             Component.update(value);
         });
     },
 
-    render: function()
+    render: function ()
     {
         return createElement(
             h('h1',
                 {},
-                ['render! test state is ' + JSON.stringify(Component.state.test)]));
+                [
+                    h('p', {}, ['render! test state is ']),
+                    h('p', {}, [JSON.stringify(Component.state)])
+                ]
+            ));
     }
 
 };
