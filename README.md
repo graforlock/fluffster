@@ -7,6 +7,9 @@ NOTE: This repository is not maintained/developed in ES6 for the sake of its lig
 Sample use :
 
 ```javascript
+
+var router = require('fluffster').router,
+
 router.defaultErrorHandler = false;
 
 router.global(
