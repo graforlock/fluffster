@@ -10,6 +10,8 @@ Sample use :
 
 var router = require('fluffster').router,
 
+/* ... Component imports ... */
+
 router.defaultErrorHandler = false;
 
 router.global(
@@ -90,7 +92,7 @@ router.driver('react');
 
 It will allow fluffster to work with JSX-style rendering if needed. All appState props will then be availible in the JSX components in ```props```.
 
-Additionally you'd have to provide additional mountpoint for each component:
+Additionally you'd have to provide additional mountpoint for each component, as Router IS NOT a component itself (therefore, its more flexible):
 
 ```javascript
 router.route(
