@@ -47,13 +47,13 @@ router.route(
             },
             /* @Messages */
             messages: {
-                incrementTest: function (appState)
+                incrementTest: function (state)
                 {
-                    return {test: appState.test + 1};
+                    return {test: state.test + 1};
                 },
-                decrementTest: function (appState)
+                decrementTest: function (state)
                 {
-                    return {test: appState.test - 1};
+                    return {test: state.test - 1};
                 }
             }
         }

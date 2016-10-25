@@ -5,7 +5,7 @@ function State(state, messages, streamB$)
 {
     if (this instanceof State)
     {
-        this.state = { appState: state.appState };
+        this.state =  state.appState;
 
         this._streamA$ = kefir.pool();
         this._streamB$ = streamB$;
