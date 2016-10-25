@@ -26,9 +26,9 @@ module.exports = {
         });
     },
 
-    emitWhile: function(state, condition) /* -> stream */
+    emitWhile: function(state, condition) /* -> stream? */
     {
-        /* Emits the stream. */
+        /* Emits the stream while the condition is true. */
 
         return this.emit(state)
             .takeWhile(condition);
