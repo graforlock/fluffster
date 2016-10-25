@@ -7,7 +7,7 @@ function State(t,s,e){return this instanceof State?(this.state=t.appState,this._
 },{"./utils":8,"kefir":54}],4:[function(require,module,exports){
 module.exports={state:require("./fluffster"),router:require("./router")};
 },{"./fluffster":3,"./router":5}],5:[function(require,module,exports){
-var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),StateRouter={store:null,globalState:null,routes:[],defaultErrorHandler:!0,route:function(e){StateRouter.routes.push(e)},driver:function(e){State=drivers[e]()},global:function(e){StateRouter.globalState=kefir.pool(),StateRouter.property=StateRouter.globalState.toProperty(),StateRouter.globalState.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){return StateRouter.property.onValue(function(e){console.log(e)}),StateRouter.globalState?void(StateRouter.store=new State(e,e.messages,StateRouter.property)):void(StateRouter.store=new State(e,e.messages,null))},sendMessage:function(e,t){StateRouter.store.messages&&StateRouter.store.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(function(e){return StateRouter.render(e)}).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler||Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render)})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)}};module.exports=StateRouter;
+var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),StateRouter={store:null,globalState:null,routes:[],defaultErrorHandler:!0,route:function(e){StateRouter.routes.push(e)},driver:function(e){e in drivers&&(State=drivers[e]())},global:function(e){StateRouter.globalState=kefir.pool(),StateRouter.property=StateRouter.globalState.toProperty(),StateRouter.globalState.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){return StateRouter.globalState?void(StateRouter.store=new State(e,e.messages,StateRouter.property)):void(StateRouter.store=new State(e,e.messages,null))},sendMessage:function(e,t){StateRouter.store.messages&&StateRouter.store.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(function(e){return StateRouter.render(e)}).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler||Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render)})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)},stream:function(){return StateRouter.globalState}};module.exports=StateRouter;
 },{"./drivers":1,"./fluffster":3,"./services/history":6,"./services/resolve":7,"kefir":54}],6:[function(require,module,exports){
 module.exports=require("history").createBrowserHistory();
 },{"history":48}],7:[function(require,module,exports){
@@ -16,6 +16,7 @@ function matchURI(e,r){var t=[],o=toRegex(e,t),n=o.exec(r);if(!n)return null;for
 var kefir=require("kefir");module.exports={compareTo:function(r,n){return JSON.stringify(r)===JSON.stringify(n)},each:function(r,n){for(var e=0;e<r.length&&!n(r[e],e++););},emit:function(r){return kefir.stream(function(n){return n.emit(r)})},extend:function(r,n){for(var e in n)r[e]=n[e]},extendMany:function(){return[].slice.call(arguments).reduce(function(r,n){for(var e in n)r[e]=n[e];return r},{})}};
 },{"kefir":54}],9:[function(require,module,exports){
 var router = require('../dist').router,
+    utils = require('../dist/utils'),
     Component = require('./component');
 
 document.querySelector('#test-3').addEventListener('click', function (e)
@@ -104,9 +105,14 @@ router.route(
         }
     });
 
+setInterval(function() {
+    router.stream().plug(utils.emit({hello: "Yello"}));
+}, 100);
+
+
 router.listen();
 
-},{"../dist":4,"./component":10}],10:[function(require,module,exports){
+},{"../dist":4,"../dist/utils":8,"./component":10}],10:[function(require,module,exports){
 var h = require('virtual-dom/h'),
     diff = require('virtual-dom/diff'),
     createElement = require('virtual-dom/create-element');
@@ -124,29 +130,22 @@ var Component = {
 
     diffTree: function ()
     {
-        if (!this.tree)
-        {
-            this.tree = this.render();
-            this.init();
-        }
-        else
-        {
-            diff(this.render(), this.tree);
-        }
+
+        this.tree = this.render();
+        this.init();
     },
 
     init: function ()
     {
-        this.app.appendChild(this.tree);
+        this.app.innerHTML = this.tree;
     },
 
     subscribe: function (stream)
     {
-        console.log(stream);
         Component.update(stream);
     },
 
-    unsubscribe: function()
+    unsubscribe: function ()
     {
         this.subscribe = null;
     },

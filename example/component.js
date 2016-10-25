@@ -15,15 +15,9 @@ var Component = {
 
     diffTree: function ()
     {
-        if (!this.tree)
-        {
-            this.tree = this.render();
-            this.init();
-        }
-        else
-        {
-            diff(this.render(), this.tree);
-        }
+
+        this.tree = this.render();
+        this.init();
     },
 
     init: function ()
@@ -33,11 +27,10 @@ var Component = {
 
     subscribe: function (stream)
     {
-        console.log(stream);
         Component.update(stream);
     },
 
-    unsubscribe: function()
+    unsubscribe: function ()
     {
         this.subscribe = null;
     },

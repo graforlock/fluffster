@@ -1,4 +1,5 @@
 var router = require('../dist').router,
+    utils = require('../dist/utils'),
     Component = require('./component');
 
 document.querySelector('#test-3').addEventListener('click', function (e)
@@ -86,5 +87,10 @@ router.route(
 
         }
     });
+
+setInterval(function() {
+    router.stream().plug(utils.emit({hello: "Yello"}));
+}, 100);
+
 
 router.listen();

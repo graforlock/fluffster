@@ -16,14 +16,18 @@ module.exports = {
         for (var i = 0; i < elements.length && !fn(elements[i], i++););
     },
 
-    emit: function(state) /* -> stream */
+    emit: function(state, condition) /* -> stream */
     {
         /* Emits the stream. */
 
-        return kefir.stream(function (emitter)
+        var stream = kefir.stream(function (emitter)
         {
             return emitter.emit(state);
-        })
+        });
+
+        if(condition && typeof condition === 'function') stream.takeWhile(condition);
+
+        return stream;
     },
 
     extend: function (obj, extension) /* -> void */

@@ -15,22 +15,22 @@ var StateRouter = {
     {
         StateRouter.routes.push(route);
     },
-
     driver: function (type)
     {
-        State = drivers[type]();
+        if(type in drivers)
+        {
+            State = drivers[type]();
+        }
     },
-
     global: function (state)
     {
         StateRouter.globalState = kefir.pool();
         StateRouter.property = StateRouter.globalState.toProperty();
         StateRouter.globalState.plug(kefir.stream(function (emitter)
         {
-            return emitter.emit(state)
+            return emitter.emit(state);
         }));
     },
-
     render: function (route)
     {
         if (StateRouter.globalState)
@@ -41,17 +41,15 @@ var StateRouter = {
 
         StateRouter.store = new State(route, route.messages, null);
     },
-
     sendMessage: function (message, newState)
     {
         if (StateRouter.store.messages)
             StateRouter.store.passMessage(message, newState);
     },
-
     router: function (location)
     {
         Resolve(StateRouter.routes, location)
-            .then(function(route)
+            .then(function (route)
             {
                 return StateRouter.render(route);
             })
@@ -72,18 +70,19 @@ var StateRouter = {
                 }
             });
     },
-
     link: function (config)
     {
         history.push(config);
     },
-
     listen: function ()
     {
         StateRouter.router(history.location);
         history.listen(StateRouter.router);
+    },
+    stream: function ()
+    {
+        return StateRouter.globalState;
     }
 };
-
 
 module.exports = StateRouter;
