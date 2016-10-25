@@ -20,14 +20,18 @@ module.exports = {
     {
         /* Emits the stream. */
 
-        var stream = kefir.stream(function (emitter)
+        return kefir.stream(function (emitter)
         {
             return emitter.emit(state);
         });
+    },
 
-        if(condition && typeof condition === 'function') stream.takeWhile(condition);
+    emitWhile: function(state, condition) /* -> stream */
+    {
+        /* Emits the stream. */
 
-        return stream;
+        return this.emit(state)
+            .takeWhile(condition);
     },
 
     extend: function (obj, extension) /* -> void */

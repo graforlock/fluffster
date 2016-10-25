@@ -92,5 +92,4 @@ setInterval(function() {
     router.stream().plug(utils.emit({hello: "Yello"}));
 }, 100);
 
-
 router.listen();
