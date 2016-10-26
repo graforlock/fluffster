@@ -9,6 +9,7 @@ var StateRouter = {
     disposableStream$: null,
     mainStream$: null,
     property$: null,
+    onError: function() {},
 
     routes: [],
     defaultErrorHandler: true,
@@ -17,13 +18,13 @@ var StateRouter = {
     {
         StateRouter.routes.push(route);
         return {
-            orElse: function(alternativeLogic)
+            onError: function(callback)
             {
                 /* Reason:
                    You may want to have one route that is not to be SPA route
                    an yet you have some JS loaders or components mounts. */
 
-                StateRouter.orElse = alternativeLogic;
+                StateRouter.onError = callback;
             }
         }
     },
@@ -70,6 +71,7 @@ var StateRouter = {
 
                 /* Log error at all times. */
                 console.warn(error);
+                StateRouter.onError(error);
 
                 if (!StateRouter.defaultErrorHandler)
                 {
@@ -81,13 +83,7 @@ var StateRouter = {
                     Resolve(StateRouter.routes, {location: location, error: error})
                         .then(StateRouter.render);
                 }
-                else
-                {
-                    if(StateRouter.orElse)
-                    {
-                        StateRouter.orElse();
-                    }
-                }
+
             });
     },
     link: function (config)
