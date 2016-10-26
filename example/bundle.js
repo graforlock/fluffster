@@ -23,8 +23,7 @@ router.defaultErrorHandler = false;
 
 router.global(
     {
-        hello: "Hello",
-        increment: 0
+        hello: "Hello"
     });
 
 router.route(
@@ -97,11 +96,10 @@ var increment = 0;
 {
     increment += 1;
     var mainStream$ = router.stream();
-    mainStream$.plug(utils.emit({hello: "Yello", increment: increment % 100}));
+    mainStream$.plug(utils.emit({hello: "Yello " + increment % 100}));
     window.requestAnimationFrame(frame);
 
 })();
-
 
 router.listen();
 
