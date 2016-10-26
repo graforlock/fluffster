@@ -1,7 +1,8 @@
 var router = require('../dist').router,
     utils = require('../dist/utils'),
     Component = require('./component');
-utils.each(document.querySelectorAll('.link'), function(link)
+
+utils.each(document.querySelectorAll('.link'), function (link)
 {
     link.addEventListener('click', function (e)
     {
@@ -28,7 +29,7 @@ router.defaultErrorHandler = false;
 
 router.global(
     {
-       hello: "Hello"
+        hello: "Hello"
     });
 
 router.route(
@@ -96,13 +97,13 @@ router.route(
 
 /* Testing the global update */
 var increment = 0;
-setInterval(function()
+setInterval(function ()
 {
 
     increment += 1;
     var mainStream$ = router.stream();
     mainStream$.plug(utils.emit({hello: "Yello " + increment}));
 
-},1000);
+}, 1000);
 
 router.listen();
