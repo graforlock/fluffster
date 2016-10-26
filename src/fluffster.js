@@ -11,6 +11,7 @@ function State(setup, propertyKeepAlive$)
         this._propertyKeepAlive$ = propertyKeepAlive$;
 
         this._component = setup.component;
+        if(setup.id) this._id = setup.id;
 
         this._combinedStream$$ = this._localStream$ && this._propertyKeepAlive$
             ? kefir.combine([this._localStream$, this._propertyKeepAlive$], function (a, b)

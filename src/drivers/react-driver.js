@@ -16,9 +16,9 @@ function ReactDecorator(Fluffster)
 
             each(this._component, function (Component, index)
             {
-                ReactDOM.render(React.createElement(Component, appState), document.querySelector(state.id[index]));
-            });
-        });
+                ReactDOM.render(React.createElement(Component, appState), document.querySelector(this._id[index]));
+            }.bind(this));
+        }.bind(this));
     };
     return Fluffster;
 }

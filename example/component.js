@@ -1,5 +1,6 @@
 var utils = require('../dist/utils'),
-    router = require('../dist').router;
+    router = require('../dist').router,
+    React = require('react');
 
 var Component = {
 
@@ -51,4 +52,11 @@ var Component = {
 
 };
 
-module.exports = Component;
+var ReactComponent = React.createClass({
+    render: function() {
+        return React.createElement('h1', null, "Hello World");
+    }
+});
+
+
+module.exports = { default: Component, react:  ReactComponent };

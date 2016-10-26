@@ -1,8 +1,10 @@
 var router = require('../dist').router,
     utils = require('../dist/utils'),
-    Component = require('./component');
+    Component = require('./component').react;
 
 router.defaultErrorHandler = false;
+
+router.driver('react');
 
 router.global(
     {
@@ -14,6 +16,7 @@ router.route(
         "/": {
             /* @View */
             component: [Component],
+            id: ["#app"],
             /* @Model */
             appState: {
                 test: 1
@@ -26,6 +29,7 @@ router.route(
         "/test": {
             /* @View */
             component: [Component],
+            id: ["#app"],
             /* @Model */
             appState: {
                 test: 2
@@ -49,6 +53,7 @@ router.route(
         "/another/:id": {
             /* @View */
             component: [Component],
+            id: ["#app"],
             /* @Model */
             appState: {
                 test: 3
@@ -63,6 +68,7 @@ router.route(
         "/error": {
             /* @View */
             component: [Component],
+            id: ["#app"],
             /* @Model */
             appState: {
                 test: 404
