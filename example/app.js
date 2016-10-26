@@ -1,21 +1,27 @@
 var router = require('../dist').router,
     utils = require('../dist/utils'),
     Component = require('./component');
-
-document.querySelector('#test-3').addEventListener('click', function (e)
+utils.each(document.querySelectorAll('.link'), function(link)
 {
-    e.preventDefault();
-
-    router.link(
-        {
-            pathname: e.target.pathname,
-            search: e.target.search
-        });
+    link.addEventListener('click', function (e)
+    {
+        e.preventDefault();
+        router.link(
+            {
+                pathname: e.target.pathname,
+                search: e.target.search
+            });
+    });
 });
 
 document.querySelector('#increment-message').addEventListener('click', function ()
 {
     router.send('incrementTest');
+});
+
+document.querySelector('#decrement-message').addEventListener('click', function ()
+{
+    router.send('decrementTest');
 });
 
 router.defaultErrorHandler = false;
