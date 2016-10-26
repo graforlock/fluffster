@@ -2,13 +2,13 @@ var router = require('../dist').router,
     utils = require('../dist/utils'),
     Component = require('./component').react;
 
-router.defaultErrorHandler = false;
+//router.defaultErrorHandler = false;
 
 router.driver('react');
 
 router.global(
     {
-        hello: "Hello"
+        hello: "Yello 0"
     });
 
 router.route(
@@ -76,18 +76,21 @@ router.route(
             /* @Update */
 
         }
+    })
+    .orElse(function()
+    {
+
     });
 
 /* Testing the global update */
 var increment = 0;
 
-(function frame()
+setInterval(function()
 {
     increment += 1;
     var mainStream$ = router.stream();
     mainStream$.plug(utils.emit({hello: "Yello " + increment % 100}));
-    window.requestAnimationFrame(frame);
 
-})();
+}, 1000);
 
 router.listen();

@@ -23,7 +23,7 @@ var StateRouter = {
                    You may want to have one route that is not to be SPA route
                    an yet you have some JS loaders or components mounts. */
 
-                StateRouter.fallbackLogic = alternativeLogic;
+                StateRouter.orElse = alternativeLogic;
             }
         }
     },

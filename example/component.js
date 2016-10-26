@@ -10,6 +10,12 @@ var helpers = {
             {
                 link.addEventListener('click', function (e)
                 {
+
+                    /* router.link should only get event
+                       should then change on unlisten()
+                       to default routing.
+                       TODO: TEST THE BEHAVIOR.*/
+
                     e.preventDefault();
                     router.link(
                         {
