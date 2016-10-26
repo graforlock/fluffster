@@ -111,10 +111,11 @@ router.route(
         }
     });
 
+/* Testing the global update */
 var increment = 0;
 setInterval(function()
 {
-    /* Testing the global update */
+
     increment += 1;
     var mainStream$ = router.stream();
     mainStream$.plug(utils.emit({hello: "Yello " + increment}));
