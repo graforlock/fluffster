@@ -6,7 +6,8 @@ router.defaultErrorHandler = false;
 
 router.global(
     {
-        hello: "Hello"
+        hello: "Hello",
+        increment: 0
     });
 
 router.route(
@@ -74,13 +75,14 @@ router.route(
 
 /* Testing the global update */
 var increment = 0;
-setInterval(function ()
-{
 
+(function frame()
+{
     increment += 1;
     var mainStream$ = router.stream();
-    mainStream$.plug(utils.emit({hello: "Yello " + increment}));
+    mainStream$.plug(utils.emit({hello: "Yello", increment: increment % 100}));
+    window.requestAnimationFrame(frame);
 
-}, 1000);
+})();
 
 router.listen();

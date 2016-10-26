@@ -31,8 +31,6 @@ var Component = {
             router.send('decrementTest');
         });
 
-        console.log('init');
-
         return this;
     },
 
