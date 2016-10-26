@@ -95,7 +95,14 @@ router.route(
     });
 
 /* Testing the global update */
-var mainStream$ = router.stream();
-mainStream$.plug(utils.emit({hello: "Yello"}));
+var increment = 0;
+setInterval(function()
+{
+
+    increment += 1;
+    var mainStream$ = router.stream();
+    mainStream$.plug(utils.emit({hello: "Yello " + increment}));
+
+},1000);
 
 router.listen();
