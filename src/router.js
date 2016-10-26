@@ -17,8 +17,12 @@ var StateRouter = {
     {
         StateRouter.routes.push(route);
         return {
-            fallbackLogic: function(alternativeLogic)
+            orElse: function(alternativeLogic)
             {
+                /* Reason:
+                   You may want to have one route that is not to be SPA route
+                   an yet you have some JS loaders or components mounts. */
+
                 StateRouter.fallbackLogic = alternativeLogic;
             }
         }
@@ -79,9 +83,9 @@ var StateRouter = {
                 }
                 else
                 {
-                    if(StateRouter.fallbackLogic)
+                    if(StateRouter.orElse)
                     {
-                        StateRouter.fallbackLogic();
+                        StateRouter.orElse();
                     }
                 }
             });

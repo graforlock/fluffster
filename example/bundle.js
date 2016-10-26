@@ -7,7 +7,7 @@ function State(t,e){return this instanceof State?(this.state=t.appState,this._lo
 },{"./utils":8,"kefir":48}],4:[function(require,module,exports){
 module.exports={state:require("./fluffster"),router:require("./router")};
 },{"./fluffster":3,"./router":5}],5:[function(require,module,exports){
-var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),StateRouter={disposableStream$:null,mainStream$:null,property$:null,routes:[],defaultErrorHandler:!0,route:function(e){return StateRouter.routes.push(e),{fallbackLogic:function(e){StateRouter.fallbackLogic=e}}},driver:function(e){e in drivers&&(State=drivers[e]())},global:function(e){StateRouter.mainStream$=kefir.pool(),StateRouter.property$=StateRouter.mainStream$.toProperty(),StateRouter.mainStream$.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){return StateRouter.mainStream$?void(StateRouter.disposableStream$=new State(e,StateRouter.property$)):void(StateRouter.disposableStream$=new State(e,null))},send:function(e,t){StateRouter.disposableStream$.messages&&StateRouter.disposableStream$.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(function(e){return StateRouter.render(e)}).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler?StateRouter.fallbackLogic&&StateRouter.fallbackLogic():(console.log("errors"),Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render))})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)},stream:function(){return StateRouter.mainStream$}};module.exports=StateRouter;
+var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),StateRouter={disposableStream$:null,mainStream$:null,property$:null,routes:[],defaultErrorHandler:!0,route:function(e){return StateRouter.routes.push(e),{orElse:function(e){StateRouter.fallbackLogic=e}}},driver:function(e){e in drivers&&(State=drivers[e]())},global:function(e){StateRouter.mainStream$=kefir.pool(),StateRouter.property$=StateRouter.mainStream$.toProperty(),StateRouter.mainStream$.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){return StateRouter.mainStream$?void(StateRouter.disposableStream$=new State(e,StateRouter.property$)):void(StateRouter.disposableStream$=new State(e,null))},send:function(e,t){StateRouter.disposableStream$.messages&&StateRouter.disposableStream$.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(function(e){return StateRouter.render(e)}).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler?StateRouter.orElse&&StateRouter.orElse():Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render)})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)},stream:function(){return StateRouter.mainStream$}};module.exports=StateRouter;
 },{"./drivers":1,"./fluffster":3,"./services/history":6,"./services/resolve":7,"kefir":48}],6:[function(require,module,exports){
 module.exports=require("history").createBrowserHistory();
 },{"history":45}],7:[function(require,module,exports){
@@ -19,7 +19,7 @@ var router = require('../dist').router,
     utils = require('../dist/utils'),
     Component = require('./component').react;
 
-//router.defaultErrorHandler = false;
+router.defaultErrorHandler = false;
 
 router.driver('react');
 
@@ -93,13 +93,6 @@ router.route(
             /* @Update */
 
         }
-    }).fallbackLogic(function ()
-    {
-        setTimeout(function()
-        {
-            document.write('DOCUMENT WRITE STRIKES BACK');
-        },0);
-
     });
 
 /* Testing the global update */
@@ -121,26 +114,25 @@ var utils = require('../dist/utils'),
     router = require('../dist').router,
     React = require('react');
 
-var Component = {
-
-    app: document.querySelector('#app h2'),
-    initialised: false,
-
-    init: function()
-    {
-        utils.each(document.querySelectorAll('.link'), function (link)
+var helpers = {
+        initLinks: function ()
         {
-            link.addEventListener('click', function (e)
-            {
-                e.preventDefault();
-                router.link(
-                    {
-                        pathname: e.target.pathname,
-                        search: e.target.search
-                    });
-            });
-        });
 
+            utils.each(document.querySelectorAll('.link'), function (link)
+            {
+                link.addEventListener('click', function (e)
+                {
+                    e.preventDefault();
+                    router.link(
+                        {
+                            pathname: e.target.pathname,
+                            search: e.target.search
+                        });
+                });
+            });
+        },
+    initEvents: function()
+    {
         document.querySelector('#increment-message').addEventListener('click', function ()
         {
             router.send('incrementTest');
@@ -150,13 +142,24 @@ var Component = {
         {
             router.send('decrementTest');
         });
+    }
+    };
 
+var Component = {
+
+    app: document.querySelector('#app h2'),
+    initialised: false,
+
+    init: function ()
+    {
+        helpers.initLinks();
+        helpers.initEvents();
         return this;
     },
 
-    update: function(data)
+    update: function (data)
     {
-        if(!this.initialised)
+        if (!this.initialised)
         {
             this.init();
             this.initialised = true;
@@ -172,13 +175,20 @@ var Component = {
 };
 
 var ReactComponent = React.createClass({
-    render: function() {
-        return React.createElement('h1', null, "Hello World");
+    componentWillMount: function()
+    {
+        helpers.initLinks();
+        helpers.initEvents();
+    },
+
+    render: function ()
+    {
+        return React.createElement('h1', null, JSON.stringify(this.props));
     }
 });
 
 
-module.exports = { default: Component, react:  ReactComponent };
+module.exports = {default: Component, react: ReactComponent};
 },{"../dist":4,"../dist/utils":8,"react":195}],11:[function(require,module,exports){
 (function (process,global){
 /* @preserve
