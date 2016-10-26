@@ -2,7 +2,7 @@ var router = require('../dist').router,
     utils = require('../dist/utils'),
     Component = require('./component').react;
 
-router.defaultErrorHandler = false;
+//router.defaultErrorHandler = false;
 
 router.driver('react');
 
@@ -76,6 +76,9 @@ router.route(
             /* @Update */
 
         }
+    }).fallbackLogic(function ()
+    {
+        document.write('DOCUMENT WRITE STRIKES BACK');
     });
 
 /* Testing the global update */
