@@ -1,6 +1,6 @@
 var router = require('../dist').router,
     utils = require('../dist/utils'),
-    Component = require('./component').init();
+    Component = require('./component');
 
 router.defaultErrorHandler = false;
 

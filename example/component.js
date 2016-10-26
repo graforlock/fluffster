@@ -4,6 +4,7 @@ var utils = require('../dist/utils'),
 var Component = {
 
     app: document.querySelector('#app h2'),
+    initialised: false,
 
     init: function()
     {
@@ -37,6 +38,11 @@ var Component = {
 
     update: function(data)
     {
+        if(!this.initialised)
+        {
+            this.init();
+            this.initialised = true;
+        }
         this.app.innerHTML = JSON.stringify(data);
     },
 

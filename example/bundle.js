@@ -17,7 +17,7 @@ var kefir=require("kefir");module.exports={compareTo:function(e,n){return JSON.s
 },{"kefir":48}],9:[function(require,module,exports){
 var router = require('../dist').router,
     utils = require('../dist/utils'),
-    Component = require('./component').init();
+    Component = require('./component');
 
 router.defaultErrorHandler = false;
 
@@ -109,6 +109,7 @@ var utils = require('../dist/utils'),
 var Component = {
 
     app: document.querySelector('#app h2'),
+    initialised: false,
 
     init: function()
     {
@@ -142,6 +143,11 @@ var Component = {
 
     update: function(data)
     {
+        if(!this.initialised)
+        {
+            this.init();
+            this.initialised = true;
+        }
         this.app.innerHTML = JSON.stringify(data);
     },
 
