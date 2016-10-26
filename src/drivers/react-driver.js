@@ -14,7 +14,7 @@ function ReactDecorator(Fluffster)
             /* Reactive Stream redraws component in a stateless
              fashion with new components. */
 
-            each(state.component, function (Component, index)
+            each(this._component, function (Component, index)
             {
                 ReactDOM.render(React.createElement(Component, appState), document.querySelector(state.id[index]));
             });
