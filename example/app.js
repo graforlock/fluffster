@@ -1,29 +1,6 @@
 var router = require('../dist').router,
     utils = require('../dist/utils'),
-    Component = require('./component');
-
-utils.each(document.querySelectorAll('.link'), function (link)
-{
-    link.addEventListener('click', function (e)
-    {
-        e.preventDefault();
-        router.link(
-            {
-                pathname: e.target.pathname,
-                search: e.target.search
-            });
-    });
-});
-
-document.querySelector('#increment-message').addEventListener('click', function ()
-{
-    router.send('incrementTest');
-});
-
-document.querySelector('#decrement-message').addEventListener('click', function ()
-{
-    router.send('decrementTest');
-});
+    Component = require('./component').init();
 
 router.defaultErrorHandler = false;
 
