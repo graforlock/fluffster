@@ -15,7 +15,7 @@ document.querySelector('#test-3').addEventListener('click', function (e)
 
 document.querySelector('#increment-message').addEventListener('click', function ()
 {
-    router.sendMessage('incrementTest');
+    router.send('incrementTest');
 });
 
 router.defaultErrorHandler = false;
@@ -88,8 +88,8 @@ router.route(
         }
     });
 
-setInterval(function() {
-    router.stream().plug(utils.emit({hello: "Yello"}));
-}, 100);
+/* Testing the global update */
+var mainStream$ = router.stream();
+mainStream$.plug(utils.emit({hello: "Yello"}));
 
 router.listen();

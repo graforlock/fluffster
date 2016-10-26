@@ -1,19 +1,19 @@
 var utils = require('./utils');
 var kefir = require('kefir');
 
-function State(state, messages, streamB$)
+function State(setup, propertyKeepAlive$)
 {
     if (this instanceof State)
     {
-        this.state =  state.appState;
+        this.state =  setup.appState;
 
-        this._streamA$ = kefir.pool();
-        this._streamB$ = streamB$;
+        this._localStream$ = kefir.pool();
+        this._propertyKeepAlive$ = propertyKeepAlive$;
 
-        this.component = state.component;
+        this._component = setup.component;
 
-        this._combined$ = this._streamA$ && this._streamB$
-            ? kefir.combine([this._streamA$, this._streamB$], function (a, b)
+        this._combinedStream$$ = this._localStream$ && this._propertyKeepAlive$
+            ? kefir.combine([this._localStream$, this._propertyKeepAlive$], function (a, b)
             {
                 return utils.extendMany({}, {appState: a}, {global: b});
             })
@@ -21,11 +21,11 @@ function State(state, messages, streamB$)
 
         this.listeners = [];
 
-        if (messages) this.assignMessages(messages);
+        if (setup.messages) this.assignMessages(setup.messages);
 
         this.onNext = function (state)
         {
-            this._streamA$.plug(utils.emit(state));
+            this._localStream$.plug(utils.emit(state));
         }.bind(this);
 
         this.updateState = function (newState)
@@ -49,14 +49,14 @@ function State(state, messages, streamB$)
 
 State.prototype.stream = function ()
 {
-    return this._combined$ ? this._combined$ : this._streamA$;
+    return this._combinedStream$$ ? this._combinedStream$$ : this._localStream$;
 };
 
 State.prototype.provide = function ()
 {
     this.stream().onValue(function (state)
         {
-            utils.each(this.component, function (component)
+            utils.each(this._component, function (component)
             {
                 if (component.subscribe)
                     component.subscribe(state);

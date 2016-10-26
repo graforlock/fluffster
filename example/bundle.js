@@ -3,17 +3,17 @@ module.exports={react:require("./react-driver")};
 },{"./react-driver":2}],2:[function(require,module,exports){
 function ReactDecorator(e){return e.prototype.provide=function(e){this.stream().onValue(function(t){each(e.component,function(r,c){ReactDOM.render(React.createElement(r,t),document.querySelector(e.id[c]))})})},e}var React=require("react"),ReactDOM=require("react-dom"),State=require("./../fluffster"),each=require("./../utils/index").each;module.exports=function(){return ReactDecorator(State)};
 },{"./../fluffster":3,"./../utils/index":8,"react":200,"react-dom":57}],3:[function(require,module,exports){
-function State(t,s,e){return this instanceof State?(this.state=t.appState,this._streamA$=kefir.pool(),this._streamB$=e,this.component=t.component,this._combined$=!(!this._streamA$||!this._streamB$)&&kefir.combine([this._streamA$,this._streamB$],function(t,s){return utils.extendMany({},{appState:t},{global:s})}),this.listeners=[],s&&this.assignMessages(s),this.onNext=function(t){this._streamA$.plug(utils.emit(t))}.bind(this),this.updateState=function(t){var s=utils.extendMany({},this.state,t);utils.compareTo(this.state,s)||(utils.extend(this.state,t),this.onNext(this.state))}.bind(this),this.onNext(this.state),this.provide(),void 0):new State(t)}var utils=require("./utils"),kefir=require("kefir");State.prototype.stream=function(){return this._combined$?this._combined$:this._streamA$},State.prototype.provide=function(){this.stream().onValue(function(t){utils.each(this.component,function(s){s.subscribe&&s.subscribe(t)}.bind(this))}.bind(this))},State.prototype.passMessage=function(t,s){t in this.messages&&this.updateState(this.messages[t](this.state,s))},State.prototype.assignMessages=function(t){this.messages=t},module.exports=State;
+function State(t,e){return this instanceof State?(this.state=t.appState,this._localStream$=kefir.pool(),this._propertyKeepAlive$=e,this._component=t.component,this._combinedStream$$=!(!this._localStream$||!this._propertyKeepAlive$)&&kefir.combine([this._localStream$,this._propertyKeepAlive$],function(t,e){return utils.extendMany({},{appState:t},{global:e})}),this.listeners=[],t.messages&&this.assignMessages(t.messages),this.onNext=function(t){this._localStream$.plug(utils.emit(t))}.bind(this),this.updateState=function(t){var e=utils.extendMany({},this.state,t);utils.compareTo(this.state,e)||(utils.extend(this.state,t),this.onNext(this.state))}.bind(this),this.onNext(this.state),this.provide(),void 0):new State(state)}var utils=require("./utils"),kefir=require("kefir");State.prototype.stream=function(){return this._combinedStream$$?this._combinedStream$$:this._localStream$},State.prototype.provide=function(){this.stream().onValue(function(t){utils.each(this._component,function(e){e.subscribe&&e.subscribe(t)}.bind(this))}.bind(this))},State.prototype.passMessage=function(t,e){t in this.messages&&this.updateState(this.messages[t](this.state,e))},State.prototype.assignMessages=function(t){this.messages=t},module.exports=State;
 },{"./utils":8,"kefir":54}],4:[function(require,module,exports){
 module.exports={state:require("./fluffster"),router:require("./router")};
 },{"./fluffster":3,"./router":5}],5:[function(require,module,exports){
-var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),StateRouter={store:null,globalState:null,routes:[],defaultErrorHandler:!0,route:function(e){StateRouter.routes.push(e)},driver:function(e){e in drivers&&(State=drivers[e]())},global:function(e){StateRouter.globalState=kefir.pool(),StateRouter.property=StateRouter.globalState.toProperty(),StateRouter.globalState.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){return StateRouter.globalState?void(StateRouter.store=new State(e,e.messages,StateRouter.property)):void(StateRouter.store=new State(e,e.messages,null))},sendMessage:function(e,t){StateRouter.store.messages&&StateRouter.store.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(function(e){return StateRouter.render(e)}).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler||Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render)})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)},stream:function(){return StateRouter.globalState}};module.exports=StateRouter;
+var Resolve=require("./services/resolve"),State=require("./fluffster"),history=require("./services/history"),drivers=require("./drivers"),kefir=require("kefir"),StateRouter={disposableStream$:null,mainStream$:null,property$:null,routes:[],defaultErrorHandler:!0,route:function(e){StateRouter.routes.push(e)},driver:function(e){e in drivers&&(State=drivers[e]())},global:function(e){StateRouter.mainStream$=kefir.pool(),StateRouter.property$=StateRouter.mainStream$.toProperty(),StateRouter.mainStream$.plug(kefir.stream(function(t){return t.emit(e)}))},render:function(e){return StateRouter.mainStream$?void(StateRouter.disposableStream$=new State(e,StateRouter.property$)):void(StateRouter.disposableStream$=new State(e,null))},send:function(e,t){StateRouter.disposableStream$.messages&&StateRouter.disposableStream$.passMessage(e,t)},router:function(e){Resolve(StateRouter.routes,e).then(function(e){return StateRouter.render(e)}).catch(function(t){console.warn(t),StateRouter.defaultErrorHandler||Resolve(StateRouter.routes,{location:e,error:t}).then(StateRouter.render)})},link:function(e){history.push(e)},listen:function(){StateRouter.router(history.location),history.listen(StateRouter.router)},stream:function(){return StateRouter.mainStream$}};module.exports=StateRouter;
 },{"./drivers":1,"./fluffster":3,"./services/history":6,"./services/resolve":7,"kefir":54}],6:[function(require,module,exports){
 module.exports=require("history").createBrowserHistory();
 },{"history":48}],7:[function(require,module,exports){
 function matchURI(e,r){var t=[],o=toRegex(e,t),n=o.exec(r);if(!n)return null;for(var a=Object.create(null),u=1;u<n.length;u++)a[t[u-1].name]=void 0!==n[u]?n[u]:void 0;return a}function Resolve(e,r){return new Promise(function(t,o){for(var n=0;n<e.length;n++){var a=e[n],u=Object.keys(a)[0],i=r.error?"/error":r.pathname,v=matchURI(u,i);if(v){var l=a;if(l[u].appState.params=v,l)return t(l[u])}}var c=new Error("Not found");return c.status=404,o(c)})}var toRegex=require("path-to-regexp"),Promise=require("bluebird");module.exports=Resolve;
 },{"bluebird":11,"path-to-regexp":56}],8:[function(require,module,exports){
-var kefir=require("kefir");module.exports={compareTo:function(r,n){return JSON.stringify(r)===JSON.stringify(n)},each:function(r,n){for(var e=0;e<r.length&&!n(r[e],e++););},emit:function(r){return kefir.stream(function(n){return n.emit(r)})},extend:function(r,n){for(var e in n)r[e]=n[e]},extendMany:function(){return[].slice.call(arguments).reduce(function(r,n){for(var e in n)r[e]=n[e];return r},{})}};
+var kefir=require("kefir");module.exports={compareTo:function(e,n){return JSON.stringify(e)===JSON.stringify(n)},each:function(e,n){for(var r=0;r<e.length&&!n(e[r],r++););},emit:function(e,n){return kefir.stream(function(n){return n.emit(e)})},emitWhile:function(e,n){return this.emit(e).takeWhile(n)},extend:function(e,n){for(var r in n)e[r]=n[r]},extendMany:function(){return[].slice.call(arguments).reduce(function(e,n){for(var r in n)e[r]=n[r];return e},{})}};
 },{"kefir":54}],9:[function(require,module,exports){
 var router = require('../dist').router,
     utils = require('../dist/utils'),
@@ -32,7 +32,7 @@ document.querySelector('#test-3').addEventListener('click', function (e)
 
 document.querySelector('#increment-message').addEventListener('click', function ()
 {
-    router.sendMessage('incrementTest');
+    router.send('incrementTest');
 });
 
 router.defaultErrorHandler = false;
@@ -105,10 +105,9 @@ router.route(
         }
     });
 
-setInterval(function() {
-    router.stream().plug(utils.emit({hello: "Yello"}));
-}, 100);
-
+/* Testing the global update */
+var mainStream$ = router.stream();
+mainStream$.plug(utils.emit({hello: "Yello"}));
 
 router.listen();
 
@@ -119,48 +118,17 @@ var h = require('virtual-dom/h'),
 
 var Component = {
 
-    state: {test: 0},
-    app: document.getElementById('app'),
+    app: document.querySelector('#app h2'),
 
-    update: function (newValue)
+    update: function(data)
     {
-        Component.state = newValue;
-        Component.diffTree();
+        this.app.innerHTML = JSON.stringify(data);
     },
 
-    diffTree: function ()
+    subscribe: function (data)
     {
-
-        this.tree = this.render();
-        this.init();
+        Component.update(data);
     },
-
-    init: function ()
-    {
-        this.app.innerHTML = this.tree;
-    },
-
-    subscribe: function (stream)
-    {
-        Component.update(stream);
-    },
-
-    unsubscribe: function ()
-    {
-        this.subscribe = null;
-    },
-
-    render: function ()
-    {
-        return createElement(
-            h('h1',
-                {},
-                [
-                    h('p', {}, ['render! test state is ']),
-                    h('p', {}, [JSON.stringify(Component.state)])
-                ]
-            ));
-    }
 
 };
 

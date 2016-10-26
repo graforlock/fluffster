@@ -6,8 +6,9 @@ var kefir = require('kefir');
 
 var StateRouter = {
 
-    store: null,
-    globalState: null,
+    disposableStream$: null,
+    mainStream$: null,
+    property$: null,
     routes: [],
     defaultErrorHandler: true,
 
@@ -24,27 +25,27 @@ var StateRouter = {
     },
     global: function (state)
     {
-        StateRouter.globalState = kefir.pool();
-        StateRouter.property = StateRouter.globalState.toProperty();
-        StateRouter.globalState.plug(kefir.stream(function (emitter)
+        StateRouter.mainStream$ = kefir.pool();
+        StateRouter.property$ = StateRouter.mainStream$.toProperty();
+        StateRouter.mainStream$.plug(kefir.stream(function (emitter)
         {
             return emitter.emit(state);
         }));
     },
     render: function (route)
     {
-        if (StateRouter.globalState)
+        if (StateRouter.mainStream$)
         {
-            StateRouter.store = new State(route, route.messages, StateRouter.property);
+            StateRouter.disposableStream$ = new State(route, StateRouter.property$);
             return;
         }
 
-        StateRouter.store = new State(route, route.messages, null);
+        StateRouter.disposableStream$ = new State(route, null);
     },
-    sendMessage: function (message, newState)
+    send: function (message, newState)
     {
-        if (StateRouter.store.messages)
-            StateRouter.store.passMessage(message, newState);
+        if (StateRouter.disposableStream$.messages)
+            StateRouter.disposableStream$.passMessage(message, newState);
     },
     router: function (location)
     {
@@ -81,7 +82,7 @@ var StateRouter = {
     },
     stream: function ()
     {
-        return StateRouter.globalState;
+        return StateRouter.mainStream$;
     }
 };
 

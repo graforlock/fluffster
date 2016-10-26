@@ -4,48 +4,17 @@ var h = require('virtual-dom/h'),
 
 var Component = {
 
-    state: {test: 0},
-    app: document.getElementById('app'),
+    app: document.querySelector('#app h2'),
 
-    update: function (newValue)
+    update: function(data)
     {
-        Component.state = newValue;
-        Component.diffTree();
+        this.app.innerHTML = JSON.stringify(data);
     },
 
-    diffTree: function ()
+    subscribe: function (data)
     {
-
-        this.tree = this.render();
-        this.init();
+        Component.update(data);
     },
-
-    init: function ()
-    {
-        this.app.appendChild(this.tree);
-    },
-
-    subscribe: function (stream)
-    {
-        Component.update(stream);
-    },
-
-    unsubscribe: function ()
-    {
-        this.subscribe = null;
-    },
-
-    render: function ()
-    {
-        return createElement(
-            h('h1',
-                {},
-                [
-                    h('p', {}, ['render! test state is ']),
-                    h('p', {}, [JSON.stringify(Component.state)])
-                ]
-            ));
-    }
 
 };
 
