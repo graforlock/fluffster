@@ -1,6 +1,6 @@
 {
   "name": "fluffster",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Lightweight state container.",
   "main": "index.js",
   "scripts": {

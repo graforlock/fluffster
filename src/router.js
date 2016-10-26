@@ -9,12 +9,19 @@ var StateRouter = {
     disposableStream$: null,
     mainStream$: null,
     property$: null,
+
     routes: [],
     defaultErrorHandler: true,
 
     route: function (route)
     {
         StateRouter.routes.push(route);
+        return {
+            fallbackLogic: function(alternativeLogic)
+            {
+                StateRouter.fallbackLogic = alternativeLogic;
+            }
+        }
     },
     driver: function (type)
     {
@@ -56,6 +63,7 @@ var StateRouter = {
             })
             .catch(function (error)
             {
+
                 /* Log error at all times. */
                 console.warn(error);
 
@@ -68,6 +76,13 @@ var StateRouter = {
 
                     Resolve(StateRouter.routes, {location: location, error: error})
                         .then(StateRouter.render);
+                }
+                else
+                {
+                    if(StateRouter.fallbackLogic)
+                    {
+                        StateRouter.fallbackLogic();
+                    }
                 }
             });
     },
