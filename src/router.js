@@ -14,6 +14,11 @@ var StateRouter = {
     routes: [],
     defaultErrorHandler: true,
 
+    handleErrorRoute: function()
+    {
+        StateRouter.defaultErrorHandler = false;
+    },
+
     route: function (route)
     {
         StateRouter.routes.push(route);
@@ -68,10 +73,16 @@ var StateRouter = {
             })
             .catch(function (error)
             {
-
-                /* Log error at all times. */
-                console.warn(error);
-                StateRouter.onError(error);
+                if(StateRouter.onError)
+                {
+                    /* Custom error handler */
+                    StateRouter.onError(error);
+                }
+                else
+                {
+                    /* Log error the error. */
+                    console.warn(error);
+                }
 
                 if (!StateRouter.defaultErrorHandler)
                 {
@@ -83,7 +94,6 @@ var StateRouter = {
                     Resolve(StateRouter.routes, {location: location, error: error})
                         .then(StateRouter.render);
                 }
-
             });
     },
     link: function (config)

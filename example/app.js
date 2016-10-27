@@ -2,9 +2,8 @@ var router = require('../dist').router,
     utils = require('../dist/utils'),
     Component = require('./component').react;
 
-//router.defaultErrorHandler = false;
-
 router.driver('react');
+router.handleErrorRoute();
 
 router.global(
     {
