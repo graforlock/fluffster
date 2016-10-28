@@ -44,7 +44,7 @@ function State(setup, propertyKeepAlive$)
     }
     else
     {
-        return new State(state);
+        return new State(setup, propertyKeepAlive$);
     }
 }
 
