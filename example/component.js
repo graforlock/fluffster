@@ -69,6 +69,8 @@ var Component = {
 };
 
 var ReactComponent = React.createClass({
+    /* Probably the most rudimentary React component ever. */
+
     componentWillMount: function()
     {
         helpers.initLinks();

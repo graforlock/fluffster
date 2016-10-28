@@ -7,7 +7,14 @@ var ajax = utils.ajax;
 
 
 router.driver('react');
-//router.handleErrorRoute();
+
+/* handleErrorRoute() is future implementation
+ for NON-SPA error route handling.
+
+ Usage:
+
+ router.handleErrorRoute();  */
+
 
 router.global(
     {
