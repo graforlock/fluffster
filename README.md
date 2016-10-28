@@ -1,5 +1,5 @@
 # fluffster 
-[![bitHound Overall Score](https://www.bithound.io/github/graforlock/fluffster/badges/score.svg)](https://www.bithound.io/github/graforlock/fluffster) [![bitHound Code](https://www.bithound.io/github/graforlock/fluffster/badges/code.svg)](https://www.bithound.io/github/graforlock/fluffster)
+[![bitHound Overall Score](https://www.bithound.io/github/graforlock/fluffster/badges/score.svg)](https://www.bithound.io/github/graforlock/fluffster) [![bitHound Code](https://www.bithound.io/github/graforlock/fluffster/badges/code.svg)](https://www.bithound.io/github/graforlock/fluffster) [![bitHound Dependencies](https://www.bithound.io/github/graforlock/fluffster/badges/dependencies.svg)](https://www.bithound.io/github/graforlock/fluffster/master/dependencies/npm) [![bitHound Dev Dependencies](https://www.bithound.io/github/graforlock/fluffster/badges/devDependencies.svg)](https://www.bithound.io/github/graforlock/fluffster/master/dependencies/npm)
 
 A lightweight state container based on reactive streams.
 
