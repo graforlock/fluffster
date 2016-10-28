@@ -1,5 +1,6 @@
 var Resolve = require('./services/resolve');
 var State = require('./fluffster');
+var ServiceProvider = require('./service-provider');
 var history = require('./services/history');
 var drivers = require('./drivers');
 var kefir = require('kefir');
@@ -9,12 +10,14 @@ var StateRouter = {
     disposableStream$: null,
     mainStream$: null,
     property$: null,
-    onError: function() {},
+    onError: function ()
+    {
+    },
 
     routes: [],
     defaultErrorHandler: true,
 
-    handleErrorRoute: function()
+    handleErrorRoute: function ()
     {
         StateRouter.defaultErrorHandler = false;
     },
@@ -23,11 +26,11 @@ var StateRouter = {
     {
         StateRouter.routes.push(route);
         return {
-            onError: function(callback)
+            onError: function (callback)
             {
                 /* Reason:
-                   You may want to have one route that is not to be SPA route
-                   an yet you have some JS loaders or components mounts. */
+                 You may want to have one route that is not to be SPA route
+                 an yet you have some JS loaders or components mounts. */
 
                 StateRouter.onError = callback;
             }
@@ -35,7 +38,7 @@ var StateRouter = {
     },
     driver: function (type)
     {
-        if(type in drivers)
+        if (type in drivers)
         {
             State = drivers[type]();
         }
@@ -51,18 +54,32 @@ var StateRouter = {
     },
     render: function (route)
     {
+
         if (StateRouter.mainStream$)
         {
             StateRouter.disposableStream$ = new State(route, StateRouter.property$);
-            return;
+        }
+        else
+        {
+            StateRouter.disposableStream$ = new State(route, null);
         }
 
-        StateRouter.disposableStream$ = new State(route, null);
+        if (route.provider)
+        {
+            ServiceProvider.getInstance(route.provider(route.appState))
+                .then(function(response)
+                {
+                    StateRouter.disposableStream$
+                        .updateState({ response: response });
+                });
+        }
     },
     send: function (message, newState)
     {
         if (StateRouter.disposableStream$.messages)
+        {
             StateRouter.disposableStream$.passMessage(message, newState);
+        }
     },
     router: function (location)
     {
@@ -73,7 +90,7 @@ var StateRouter = {
             })
             .catch(function (error)
             {
-                if(StateRouter.onError)
+                if (StateRouter.onError)
                 {
                     /* Custom error handler */
                     StateRouter.onError(error);

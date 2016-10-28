@@ -81,5 +81,9 @@ var ReactComponent = React.createClass({
     }
 });
 
+var CONSTANTS = Object.freeze({
+    API: 'https://jsonplaceholder.typicode.com/posts/'
+});
 
-module.exports = {default: Component, react: ReactComponent};
+
+module.exports = {default: Component, react: { A: ReactComponent, B: ReactComponent, C: ReactComponent, E: ReactComponent, CONSTANTS: CONSTANTS }};

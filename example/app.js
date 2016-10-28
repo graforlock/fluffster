@@ -1,9 +1,13 @@
 var router = require('../dist').router,
     utils = require('../dist/utils'),
-    Component = require('./component').react;
+    Component = require('./component').react,
+    CONSTANTS = Component.CONSTANTS;
+
+var ajax = utils.ajax;
+
 
 router.driver('react');
-router.handleErrorRoute();
+//router.handleErrorRoute();
 
 router.global(
     {
@@ -14,7 +18,7 @@ router.route(
     {
         "/": {
             /* @View */
-            component: [Component],
+            component: [Component.A],
             id: ["#app"],
             /* @Model */
             appState: {
@@ -27,7 +31,7 @@ router.route(
     {
         "/test": {
             /* @View */
-            component: [Component],
+            component: [Component.B],
             id: ["#app"],
             /* @Model */
             appState: {
@@ -51,14 +55,18 @@ router.route(
     {
         "/another/:id": {
             /* @View */
-            component: [Component],
+            component: [Component.C],
             id: ["#app"],
             /* @Model */
             appState: {
                 test: 3
-            }
+            },
             /* @Update */
-
+            provider: function (state)
+            {
+                return ajax('GET',
+                    { url: CONSTANTS.API + state.params.id });
+            }
         }
     });
 
@@ -66,25 +74,25 @@ router.route(
     {
         "/error": {
             /* @View */
-            component: [Component],
+            component: [Component.E],
             id: ["#app"],
             /* @Model */
             appState: {
                 test: 404
             }
             /* @Update */
-
+            // None...
         }
     })
-    .onError(function()
+    .onError(function (err)
     {
-
+        console.log(err)
     });
 
 /* Testing the global update */
 var increment = 0;
 
-setInterval(function()
+setInterval(function ()
 {
     increment += 1;
     var mainStream$ = router.stream();
