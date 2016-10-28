@@ -1,4 +1,5 @@
-# fluffster
+# fluffster 
+[![bitHound Overall Score](https://www.bithound.io/github/graforlock/fluffster/badges/score.svg)](https://www.bithound.io/github/graforlock/fluffster) [![bitHound Code](https://www.bithound.io/github/graforlock/fluffster/badges/code.svg)](https://www.bithound.io/github/graforlock/fluffster)
 
 A lightweight state container based on reactive streams.
 
