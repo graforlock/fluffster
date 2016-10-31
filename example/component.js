@@ -64,7 +64,7 @@ var Component = {
     subscribe: function (data)
     {
         Component.update(data);
-    },
+    }
 
 };
 

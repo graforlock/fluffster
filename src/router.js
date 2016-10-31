@@ -3,19 +3,22 @@ var State = require('./fluffster');
 var ServiceProvider = require('./service-provider');
 var history = require('./services/history');
 var drivers = require('./drivers');
-var kefir = require('kefir');
+var utils = require('./utils');
 
 var StateRouter = {
 
-    disposableStream$: null,
-    mainStream$: null,
-    property$: null,
-    onError: function ()
-    {
-    },
-
+    appState: null,
+    sharedState: null,
     routes: [],
     defaultErrorHandler: true,
+
+    onError: function () {},
+
+    updateState: function(updatedState)
+    {
+        StateRouter.sharedState = utils.extendMany({}, StateRouter.appState.state, updatedState);
+        StateRouter.appState.updateState(StateRouter.sharedState);
+    },
 
     handleErrorRoute: function ()
     {
@@ -36,6 +39,7 @@ var StateRouter = {
             }
         }
     },
+
     driver: function (type)
     {
         if (type in drivers)
@@ -43,25 +47,17 @@ var StateRouter = {
             State = drivers[type]();
         }
     },
-    global: function (state)
-    {
-        StateRouter.mainStream$ = kefir.pool();
-        StateRouter.property$ = StateRouter.mainStream$.toProperty();
-        StateRouter.mainStream$.plug(kefir.stream(function (emitter)
-        {
-            return emitter.emit(state);
-        }));
-    },
+
     render: function (route)
     {
 
-        if (StateRouter.mainStream$)
+        if (StateRouter.rootState)
         {
-            StateRouter.disposableStream$ = new State(route, StateRouter.property$);
+            StateRouter.appState = new State(route, StateRouter.rootState);
         }
         else
         {
-            StateRouter.disposableStream$ = new State(route, null);
+            StateRouter.appState = new State(route, null);
         }
 
         if (route.provider)
@@ -69,16 +65,16 @@ var StateRouter = {
             ServiceProvider.getInstance(route.provider(route.appState))
                 .then(function(response)
                 {
-                    StateRouter.disposableStream$
+                    StateRouter.appState
                         .updateState({ response: response });
                 });
         }
     },
     send: function (message, newState)
     {
-        if (StateRouter.disposableStream$.messages)
+        if (StateRouter.appState.messages)
         {
-            StateRouter.disposableStream$.passMessage(message, newState);
+            StateRouter.appState.passMessage(message, newState);
         }
     },
     router: function (location)
@@ -113,19 +109,25 @@ var StateRouter = {
                 }
             });
     },
+
     link: function (config)
     {
+        if(!config.pathname) throw new Error("Router.link() : pathname is Required.");
+
         history.push(config);
     },
+
     listen: function ()
     {
         StateRouter.router(history.location);
         history.listen(StateRouter.router);
     },
-    stream: function ()
+
+    getRootState: function ()
     {
-        return StateRouter.mainStream$;
+        return StateRouter.rootState;
     }
+
 };
 
 module.exports = StateRouter;

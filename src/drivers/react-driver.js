@@ -4,22 +4,30 @@ var React = require('react'),
 var State = require('./../fluffster'),
     each = require('./../utils/index').each;
 
+function renderLoop(components, id)
+{
+    return function(props)
+    {
+        each(components, function (Component, index)
+        {
+            ReactDOM.render(React.createElement(Component, props),
+                document.querySelector(id[index]));
+        });
+    }
+}
+
 function ReactDecorator(Fluffster)
 {
     /* @Override */
-    Fluffster.prototype.provide = function (state)
+    Fluffster.prototype.provide = function (updatedProps)
     {
-        this.stream().onValue(function (appState)
+        if(!this.renderLoop)
         {
-            /* Reactive Stream redraws component in a stateless
-             fashion with new components. */
-
-            each(this._component, function (Component, index)
-            {
-                ReactDOM.render(React.createElement(Component, appState), document.querySelector(this._id[index]));
-            }.bind(this));
-        }.bind(this));
+            this.renderLoop = renderLoop(this._component, this._id);
+        }
+        this.renderLoop(updatedProps);
     };
+
     return Fluffster;
 }
 

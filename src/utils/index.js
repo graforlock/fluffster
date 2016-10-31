@@ -1,6 +1,6 @@
 var kefir = require('kefir');
 
-module.exports = {
+var utils = {
     ajax: function ajax(method, options)
     {
         if (this instanceof ajax)
@@ -54,7 +54,7 @@ module.exports = {
                 });
             }.bind(this);
 
-            this.defaultError = function(err)
+            this.defaultError = function (err)
             {
                 console.warn("404: Bad request.");
             };
@@ -168,6 +168,19 @@ module.exports = {
             return str.join("&");
         }
     },
+    renderLoop: function (component)
+    {
+        return function (props)
+        {
+            utils.each(component, function (_component)
+            {
+                if (_component.subscribe)
+                {
+                    _component.subscribe(props);
+                }
+            });
+        }
+    },
     Singleton: function (module)
     {
         return (function ()
@@ -180,15 +193,17 @@ module.exports = {
                 {
                     if (!_instance)
                     {
-                        _instance =  new module(params);
+                        _instance = new module(params);
                     }
                     return _instance;
                 },
             }
         })();
     },
-    thennable: function(object)
+    thennable: function (object)
     {
         return Boolean(object.then);
     }
 };
+
+module.exports = utils;
