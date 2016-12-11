@@ -1,7 +1,7 @@
 var utils = require('./utils');
-var kefir = require('kefir');
+renderLoop = utils.renderLoop;
 
-function State(setup, propertyKeepAlive$)
+function State(setup, rootState)
 {
     /*  0. Constructor check */
 
@@ -9,29 +9,24 @@ function State(setup, propertyKeepAlive$)
     {
         /* 1. Inital setup */
 
-        this.state = setup.appState;
-        this._localStream$ = kefir.pool();
-        this._propertyKeepAlive$ = propertyKeepAlive$;
-        this._component = setup.component;
-        this.listeners = [];
+        rootState = rootState || {};
+        this._id = [];
+
+        this.state = utils.extendMany({}, rootState, setup.appState);
+
+        if (setup.component) this._component = setup.component;
         if (setup.id) this._id = setup.id;
         if (setup.messages) this.assignMessages(setup.messages);
 
-        /* 2. If there's two streams,
-           stream merge occurs. */
-
-        /* @Computed property */
-        this._combinedStream$$ = this._localStream$ && this._propertyKeepAlive$
-            ? kefir.combine([this._localStream$, this._propertyKeepAlive$], function (a, b)
-            {
-                return utils.extendMany({}, {appState: a}, {global: b});
-            })
-            : false;
-
         /* @Class method */
-        this.onNext = function (state)
+        this.onNext = function (id)
         {
-            this._localStream$.plug(utils.emit(state));
+            if (id && this._id.indexOf(id) === -1) this._id.push(id);
+
+            if (this._component)
+            {
+                this.provide(this.state);
+            }
         }.bind(this);
 
         /* @Class method */
@@ -41,54 +36,40 @@ function State(setup, propertyKeepAlive$)
             if (!utils.compareTo(this.state, comparator))
             {
                 utils.extend(this.state, newState);
-                this.onNext(this.state);
+                this.onNext();
             }
         }.bind(this);
 
-        /* 3. Initialise program. */
+        /* 2. Initialise program. */
 
         /* @Initialisers */
-        this.onNext(this.state);
-        this.provide();
+        this.onNext();
     }
     else
     {
         /* Constructor check executed when no 'new'
-           present in the call. */
+         present in the call. */
 
-        return new State(setup, propertyKeepAlive$);
+        return new State(setup, rootState);
     }
 }
 
-
-State.prototype.stream = function ()
-{
-    /* Returns a stream or combined streams. */
-
-    return this._combinedStream$$ ? this._combinedStream$$ : this._localStream$;
-};
-
-
-State.prototype.provide = function ()
+State.prototype.provide = function (updatedState)
 {
     /* Provides the state to all components. */
 
-    this.stream().onValue(function (state)
-        {
-            utils.each(this._component, function (component)
-            {
-                if (component.subscribe)
-                    component.subscribe(state);
-            }.bind(this));
-        }.bind(this)
-    );
-};
+    if (!this.renderLoop)
+    {
+        this.renderLoop = renderLoop(this._component)
+    }
+    this.renderLoop(updatedState);
 
+};
 
 State.prototype.passMessage = function (message, payload)
 {
     /* Passes a messages if a message interface
-       exists in the current context. */
+     exists in the current context. */
 
     if (message in this.messages)
     {
@@ -96,12 +77,24 @@ State.prototype.passMessage = function (message, payload)
     }
 };
 
-
 State.prototype.assignMessages = function (messages)
 {
     /* Messages list setter. */
 
     this.messages = messages;
+};
+
+State.prototype.of = function (component)
+{
+    this._component = typeof component === 'object' ? component : [component];
+    if (this._id.length)
+    {
+        this.onNext();
+    }
+    else
+    {
+        return {render: this.onNext.bind(this), component: component};
+    }
 };
 
 

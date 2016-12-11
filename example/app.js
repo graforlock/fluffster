@@ -4,23 +4,30 @@ var fluffster = require('../dist'),
     Component = require('./component').react,
     CONSTANTS = Component.CONSTANTS;
 
-var ajax = utils.ajax;
+var State = require('../dist/fluffster'),
+    ReactDriver = require('../dist/drivers/react-driver');
 
+
+var componentState = ReactDriver(State)({ appState: { heyho: 'ho!' } }, null);
+
+    componentState.of(Component.A);
+
+console.log(componentState);
+
+var ajax = utils.ajax;
 
 router.driver('react');
 
 /* handleErrorRoute() is future implementation
- for NON-SPA error route handling.
+ for full-SPA error route handling.
 
  Usage:
 
  router.handleErrorRoute();  */
 
-
-router.global(
-    {
-        hello: "Yello 0"
-    });
+router.rootState = {
+  auth: false
+};
 
 router.route(
     {
@@ -97,15 +104,5 @@ router.route(
         console.log(err)
     });
 
-/* Testing the global update */
-var increment = 0;
-
-setInterval(function ()
-{
-    increment += 1;
-    var mainStream$ = router.stream();
-    mainStream$.plug(utils.emit({hello: "Yello " + increment % 100}));
-
-}, 1000);
-
 router.listen();
+
