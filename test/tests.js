@@ -5,10 +5,10 @@ var test = require('tape'),
 test('Module imports.', t =>
 {
     var setup = {
-      exported : ['state', 'router', 'utils']
+      exported : ['state', 'router', 'utils', 'drivers']
     };
 
-    t.plan(4);
+    t.plan(5);
 
     t.equal(typeof fluffster, 'object', '-> exports a valid object module');
     setup.exported.forEach(exp =>

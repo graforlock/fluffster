@@ -4,8 +4,8 @@ var fluffster = require('../dist'),
     Component = require('./component').react,
     CONSTANTS = Component.CONSTANTS;
 
-var State = require('../dist/fluffster'),
-    ReactDriver = require('../dist/drivers/react-driver');
+var State = fluffster.state,
+    ReactDriver = fluffster.drivers.react;
 
 
 var componentState = ReactDriver(State)({ appState: { heyho: 'ho!' } }, null);
