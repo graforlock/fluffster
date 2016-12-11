@@ -28,7 +28,7 @@ function Resolve(routes, context)
             var params = matchURI(path, uri);
             if (!params) continue;
             var result = route;
-            result[path].appState.params = params;
+            result[path].params = params;
             if (result) return resolve(result[path]);
         }
         var error = new Error('Not found');

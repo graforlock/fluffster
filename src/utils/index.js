@@ -1,4 +1,6 @@
-var kefir = require('kefir');
+var kefir = require('kefir'),
+    React = require('react'),
+    ReactDOM = require('react-dom');
 
 var utils = {
     ajax: function ajax(method, options)
@@ -129,6 +131,9 @@ var utils = {
             return a;
         }, {});
     },
+    noop: function ()
+    {
+    },
     serialize: {
         form: function (form)
         {
@@ -168,16 +173,15 @@ var utils = {
             return str.join("&");
         }
     },
-    renderLoop: function (component)
+    renderLoop: function (components, id)
     {
         return function (props)
         {
-            utils.each(component, function (_component)
+            console.log(components);
+            utils.each(components, function (Component, index)
             {
-                if (_component.subscribe)
-                {
-                    _component.subscribe(props);
-                }
+                ReactDOM.render(React.createElement(Component, props),
+                    document.querySelector(id[index]));
             });
         }
     },

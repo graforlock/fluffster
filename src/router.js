@@ -1,24 +1,13 @@
 var Resolve = require('./services/resolve');
-var State = require('./fluffster');
-var ServiceProvider = require('./service-provider');
 var history = require('./services/history');
-var drivers = require('./drivers');
 var utils = require('./utils');
 
 var StateRouter = {
 
-    appState: null,
-    sharedState: null,
     routes: [],
     defaultErrorHandler: true,
 
-    onError: function () {},
-
-    updateState: function(updatedState)
-    {
-        StateRouter.sharedState = utils.extendMany({}, StateRouter.appState.state, updatedState);
-        StateRouter.appState.updateState(StateRouter.sharedState);
-    },
+    onError: utils.noop,
 
     handleErrorRoute: function ()
     {
@@ -28,55 +17,14 @@ var StateRouter = {
     route: function (route)
     {
         StateRouter.routes.push(route);
-        return {
-            onError: function (callback)
-            {
-                /* Reason:
-                 You may want to have one route that is not to be SPA route
-                 an yet you have some JS loaders or components mounts. */
-
-                StateRouter.onError = callback;
-            }
-        }
-    },
-
-    driver: function (type)
-    {
-        if (type in drivers)
-        {
-            State = drivers[type]();
-        }
     },
 
     render: function (route)
     {
-
-        if (StateRouter.rootState)
-        {
-            StateRouter.appState = new State(route, StateRouter.rootState);
-        }
-        else
-        {
-            StateRouter.appState = new State(route, null);
-        }
-
-        if (route.provider)
-        {
-            ServiceProvider.getInstance(route.provider(route.appState))
-                .then(function(response)
-                {
-                    StateRouter.appState
-                        .updateState({ response: response });
-                });
-        }
+        utils.renderLoop(route.component, route.id)
+            ({params: route.params});
     },
-    send: function (message, newState)
-    {
-        if (StateRouter.appState.messages)
-        {
-            StateRouter.appState.passMessage(message, newState);
-        }
-    },
+
     router: function (location)
     {
         Resolve(StateRouter.routes, location)
@@ -113,7 +61,6 @@ var StateRouter = {
     link: function (config)
     {
         if(!config.pathname) throw new Error("Router.link() : pathname is Required.");
-
         history.push(config);
     },
 
@@ -121,11 +68,6 @@ var StateRouter = {
     {
         StateRouter.router(history.location);
         history.listen(StateRouter.router);
-    },
-
-    getRootState: function ()
-    {
-        return StateRouter.rootState;
     }
 
 };
