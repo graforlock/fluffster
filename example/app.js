@@ -1,5 +1,6 @@
-var router = require('../dist').router,
-    utils = require('../dist/utils'),
+var fluffster = require('../dist'),
+    router = fluffster.router,
+    utils = fluffster.utils,
     Component = require('./component').react,
     CONSTANTS = Component.CONSTANTS;
 

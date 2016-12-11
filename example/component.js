@@ -1,5 +1,6 @@
-var utils = require('../dist/utils'),
-    router = require('../dist').router,
+var fluffster = require('../dist'),
+    utils = fluffster.utils,
+    router = fluffster.router,
     React = require('react');
 
 var helpers = {

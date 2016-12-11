@@ -1,1 +1,0 @@
-var Promise=require("bluebird"),ServiceLoader={provider:function(e){if(e)return new Promise(function(r,i){return r(e())})}};module.exports=ServiceLoader;
